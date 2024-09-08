@@ -4,6 +4,9 @@ import { isEmail } from "validator";
 
 // Define an interface for the user document
 export interface IUser extends Document {
+  googleId?: string;
+  facebookId?: string;
+  githubId?: string;
   name?: string;
   email: string;
   password?: string;
@@ -16,6 +19,21 @@ export interface IUser extends Document {
 // Define the schema
 const userSchema: Schema<IUser> = new mongoose.Schema(
   {
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true
+    },
+    facebookId: {
+      type: String,
+      unique: true,
+      sparse: true
+    },
+    githubId: {
+      type: String,
+      unique: true,
+      sparse: true
+    },
     name: {
       type: String,
     },

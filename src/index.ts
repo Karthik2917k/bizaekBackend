@@ -5,10 +5,14 @@ import cors from "cors";
 import https from "https";
 import http from "http";
 import dotenv from "dotenv";
-import authRoute from "./routes/user.routes"; 
 import { checkGuestAccess } from "./middleware/checkGuestAccess";
+import session from 'express-session';
+import passport from 'passport';
 import httpLogger  from "./util/createLogger";
+// import './helpers/passport-config';
 
+import authRoute from "./routes/user.routes"; 
+import utilRoute from "./routes/utils.routes"; 
 
 dotenv.config();
 
@@ -25,7 +29,14 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(httpLogger);
+app.use(session({
+  secret: process.env.SESSION_SECRET!,
+  resave: false,
+  saveUninitialized: false,
+}));
 
+app.use(passport.initialize());
+app.use(passport.session());
 const dbURI: string = process.env.DB_URI || "";
 
 mongoose.set("strictQuery", true);
@@ -40,3 +51,4 @@ mongoose
 
 // USER ROUTES
 app.use("/api/user/auth",checkGuestAccess(), authRoute);
+app.use("/api/util",checkGuestAccess(), utilRoute);

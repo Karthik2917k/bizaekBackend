@@ -7,7 +7,9 @@ const router = Router();
 // Uncomment and update these routes when you have corresponding methods in authController
 
 router.post("/register", Controller.register);
+router.post("/verifyOtpAndRegister", Controller.verifyOtpAndRegister);
 router.post("/login", Controller.login);
+
 // router.post("/socialAuth", authController.socialAuth);
 
 // User Routes

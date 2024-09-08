@@ -1,9 +1,13 @@
 import { Request, Response } from "express";
 import User, { IUser } from "../../models/user.model";
-
+import ResetPassword from "../../models/reset.model";
+import IResetPassword from "../../models/reset.model";
+import passport from 'passport';
 import { createTokenUser } from "../../middleware/createTokenUser";
 import { validationResult } from "express-validator";
 import bcrypt from "bcryptjs";
+import { generateNumericOTP } from "../../helpers/common"
+import { sendEmail } from "../../util/sendEmail"
 
 // Interface for Register Request Body
 interface RegisterRequestBody {
@@ -14,30 +18,94 @@ interface RegisterRequestBody {
 
 // Register Function
 export const register = async (req: Request<{}, {}, RegisterRequestBody>, res: Response) => {
-  const { email } = req.body;
+  const { email, name } = req.body;
 
   try {
     const findUser = await User.findOne({ email }) as IUser | null;
 
+    if (findUser) {
+      return res.status(400).json({ error: "Email already connected with a user" });
+    }
+
+    // Generate OTP
+    const otp = generateNumericOTP(6);
+    const expirationTime = 15 * 60 * 1000; // 15 minutes
+    const expiresAt = Date.now() + expirationTime;
+
+    // Hash password if provided
     if (req.body.password) {
       const salt = await bcrypt.genSalt();
       const hashedPassword = await bcrypt.hash(req.body.password, salt);
       req.body.password = hashedPassword;
     }
 
-    if (!findUser) {
-      const user = await User.create(req.body) as IUser;
-    
-      const token = await createTokenUser(user as IUser);
-      return res.status(201).json({ user: user, token });
-    } else {
-      res.status(400).json({ error: "Email already connected with any user" });
-    }
+    // Store OTP for verification
+    const otpRecord = new ResetPassword({
+      otp,
+      email,
+      name,
+      password: req.body.password,
+      expirationTime: expiresAt,
+      reason: "Register"
+    });
+    await otpRecord.save();
+
+    // Send OTP to email
+    const mailOptions = {
+      from: process.env.EMAIL_SENDER!,
+      to: email.toLowerCase(),
+      subject: "One-Time Password (OTP) for Registration",
+      text: `Your OTP for registration is: ${otp}. Please use it within the next 15 minutes.`
+    };
+    await sendEmail(mailOptions);
+
+    res.status(200).json({ message: "OTP sent successfully. Please verify to complete registration." });
   } catch (err: any) {
     let error = err.message;
     res.status(400).json({ error });
   }
 };
+
+// OTP Verification Function
+export const verifyOtpAndRegister = async (req: Request, res: Response) => {
+  try {
+    const { email, otp } = req.body;
+
+    // Find OTP record
+    const otpVerification = await ResetPassword.findOne({
+      email,
+      reason: "Register",
+    });
+
+    // Ensure otpVerification is defined
+    if (!otpVerification) {
+      return res.status(400).json({ error: "Invalid or expired OTP." });
+    }
+
+    // Extract values safely with type checking
+    const { otp: storedOtp, expirationTime } = otpVerification;
+
+    // Ensure expirationTime is not undefined
+    if (storedOtp !== otp || expirationTime === undefined || expirationTime < Date.now()) {
+      return res.status(400).json({ error: "Invalid or expired OTP." });
+    }
+
+    // Create user after OTP verification
+    const user = await User.create({ email, password: otpVerification?.password, name: otpVerification?.name }) as IUser;
+
+    // Generate token for the user
+    const token = await createTokenUser(user);
+
+    // Remove OTP record after successful verification
+    await ResetPassword.deleteOne({ email, reason: "Register" });
+
+    res.status(201).json({ user, token });
+  } catch (err: any) {
+    let error = err.message;
+    res.status(400).json({ error });
+  }
+};
+
 
 
 // Interface for Login Request Body
@@ -86,4 +154,6 @@ export const login = [
     }
   },
 ];
+
+
 

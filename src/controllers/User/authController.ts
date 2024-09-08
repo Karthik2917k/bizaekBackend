@@ -55,7 +55,13 @@ export const register = async (req: Request<{}, {}, RegisterRequestBody>, res: R
       from: process.env.EMAIL_SENDER!,
       to: email.toLowerCase(),
       subject: "One-Time Password (OTP) for Registration",
-      text: `Your OTP for registration is: ${otp}. Please use it within the next 15 minutes.`
+      text: `Hello,
+  
+      Your OTP for verification is: ${otp}.
+      Please use this OTP within the next 15 minutes.
+
+      Thanks 
+      Bizaek Team`
     };
     await sendEmail(mailOptions);
 

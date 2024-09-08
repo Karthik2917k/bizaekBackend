@@ -13,10 +13,10 @@ export default {
       const { agent, type, languages, location } = req.query;
       const templers = await Templers.find({ deleted: false });
 
-      res.status(200).json({ templers });
+      res.status(200).json({ status: 200, message: 'Templers retrieved successfully', templers });
     } catch (err) {
       const error = err instanceof Error ? err.message : 'Unknown error';
-      res.status(400).json({ error });
+      res.status(400).json({ status: 400, error });
     }
   },
 
@@ -27,14 +27,14 @@ export default {
       const templer = await Templers.findById(id);
 
       if (!templer) {
-        res.status(404).json({ error: 'Templer not found' });
+        res.status(404).json({ status: 404, message: 'Templer not found' });
         return;
       }
 
-      res.status(200).json({ templer });
+      res.status(200).json({ status: 200, message: 'Templer retrieved successfully', templer });
     } catch (err) {
       const error = err instanceof Error ? err.message : 'Unknown error';
-      res.status(400).json({ error });
+      res.status(400).json({ status: 400, error });
     }
   },
 
@@ -43,10 +43,10 @@ export default {
     try {
       const newTempler = new Templers(req.body);
       const savedTempler = await newTempler.save();
-      res.status(201).json({ templer: savedTempler });
+      res.status(201).json({ status: 201, message: 'Templer created successfully', templer: savedTempler });
     } catch (err) {
       const error = err instanceof Error ? err.message : 'Unknown error';
-      res.status(400).json({ error });
+      res.status(400).json({ status: 400, error });
     }
   },
 
@@ -62,14 +62,14 @@ export default {
       );
 
       if (!updatedTempler) {
-        res.status(404).json({ error: 'Templer not found' });
+        res.status(404).json({ status: 404, message: 'Templer not found' });
         return;
       }
 
-      res.status(200).json({ templer: updatedTempler });
+      res.status(200).json({ status: 200, message: 'Templer updated successfully', templer: updatedTempler });
     } catch (err) {
       const error = err instanceof Error ? err.message : 'Unknown error';
-      res.status(400).json({ error });
+      res.status(400).json({ status: 400, error });
     }
   },
 
@@ -85,16 +85,14 @@ export default {
       );
 
       if (!updatedTempler) {
-        res.status(404).json({ error: 'Templer not found' });
+        res.status(404).json({ status: 404, message: 'Templer not found' });
         return;
       }
 
-      res.status(200).json({ message: 'Templer deleted' });
+      res.status(200).json({ status: 200, message: 'Templer deleted successfully' });
     } catch (err) {
       const error = err instanceof Error ? err.message : 'Unknown error';
-      res.status(400).json({ error });
+      res.status(400).json({ status: 400, error });
     }
   },
-
-
 };

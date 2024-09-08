@@ -19,10 +19,17 @@ export const getAllAccountants = async (req: Request, res: Response): Promise<vo
   }
 };
 
-export const getAccountantById = async (req: Request, res: Response): Promise<void> => {
+export const getAccountantProfile = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
-    const accountant = await Accountants.findById(id);
+    // Extract user from req.user
+    const userInfo: UserI | undefined = req.user;
+
+    // Check if userInfo and userInfo._id are valid
+    if (!userInfo) {
+      res.status(401).json({ error: 'Unauthorized: User not authenticated' });
+      return;
+    }
+    const accountant = await Accountants.findOne({ userId: userInfo._id });
 
     if (!accountant) {
       res.status(404).json({ error: 'Accountant not found' });
@@ -39,12 +46,19 @@ export const getAccountantById = async (req: Request, res: Response): Promise<vo
 export const createAccountant = async (req: Request, res: Response): Promise<void> => {
   try {
     // Extract user from req.user
-    const userInfo:UserI|undefined = req.user;
+    const userInfo: UserI | undefined = req.user;
 
     // Check if userInfo and userInfo._id are valid
     if (!userInfo) {
       res.status(401).json({ error: 'Unauthorized: User not authenticated' });
       return;
+    }
+
+    const existUser = await Accountants.findOne({ userId: userInfo._id })
+    if (existUser) {
+      res.status(403).json({ status: 403, error: 'Duplicate User: Already a user' });
+      return;
+
     }
 
     // Create new accountant with userId from userInfo

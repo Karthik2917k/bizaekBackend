@@ -35,6 +35,7 @@ const userSchema: Schema<ITemplers> = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
       required: false,
+      unique:true
     },
     firstName: {
       type: String,
@@ -44,6 +45,7 @@ const userSchema: Schema<ITemplers> = new mongoose.Schema(
     },
     profilePic: {
       type: String,
+      default:""
     },
     countryCode: {
       type: Number,

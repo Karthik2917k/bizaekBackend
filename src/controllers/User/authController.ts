@@ -24,7 +24,7 @@ export const register = async (req: Request<{}, {}, RegisterRequestBody>, res: R
     const findUser = await User.findOne({ email }) as IUser | null;
 
     if (findUser) {
-      return res.status(400).json({ error: "Email already connected with a user" });
+      return res.status(403).json({ error: "Email already connected with a user",status:403 });
     }
 
     // Generate OTP
@@ -65,7 +65,7 @@ export const register = async (req: Request<{}, {}, RegisterRequestBody>, res: R
     };
     await sendEmail(mailOptions);
 
-    res.status(200).json({ message: "OTP sent successfully. Please verify to complete registration." });
+    res.status(200).json({ message: "OTP sent successfully. Please verify to complete registration.",status:200 });
   } catch (err: any) {
     let error = err.message;
     res.status(400).json({ error });
@@ -85,7 +85,7 @@ export const verifyOtpAndRegister = async (req: Request, res: Response) => {
 
     // Ensure otpVerification is defined
     if (!otpVerification) {
-      return res.status(400).json({ error: "Invalid or expired OTP." });
+      return res.status(400).json({ error: "Invalid or expired OTP.",status:400, });
     }
 
     // Extract values safely with type checking
@@ -93,7 +93,7 @@ export const verifyOtpAndRegister = async (req: Request, res: Response) => {
 
     // Ensure expirationTime is not undefined
     if (storedOtp !== otp || expirationTime === undefined || expirationTime < Date.now()) {
-      return res.status(400).json({ error: "Invalid or expired OTP." });
+      return res.status(400).json({status:400, error: "Invalid or expired OTP." });
     }
 
     // Create user after OTP verification
@@ -105,7 +105,7 @@ export const verifyOtpAndRegister = async (req: Request, res: Response) => {
     // Remove OTP record after successful verification
     await ResetPassword.deleteOne({ email, reason: "Register" });
 
-    res.status(201).json({ user, token });
+    res.status(201).json({ status:201,user, token });
   } catch (err: any) {
     let error = err.message;
     res.status(400).json({ error });
@@ -129,7 +129,7 @@ export const login = [
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        return res.status(400).json({ status:400,errors: errors.array() });
       }
 
       const user = await User.findOne({ email }) as IUser | null;
@@ -138,25 +138,25 @@ export const login = [
         if (password) {
           const auth = await bcrypt.compare(password, user.password || '');
           if (!auth) {
-            return res.status(400).json({ error: "Incorrect password" });
+            return res.status(400).json({status:400, error: "Incorrect password" });
           }
         }
 
         if (user.status === "BLOCKED") {
-          return res.status(400).json({ error: "User is blocked" });
+          return res.status(400).json({ status:400,error: "User is blocked" });
         }
 
         // await User.findByIdAndUpdate(user._id, { fcmToken });
 
         // const userWithoutPassword = await User.findById(user._id).select('-password');
         const token = await createTokenUser(user as IUser);
-        res.status(200).json({ message: "Login Successfully", token });
+        res.status(200).json({ status:200,message: "Login Successfully", token });
       } else {
         throw new Error("Please enter registered email");
       }
     } catch (err: any) {
       console.error(err);
-      res.status(400).json({ error: err.message });
+      res.status(400).json({status:400, error: err.message });
     }
   },
 ];

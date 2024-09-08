@@ -37,6 +37,8 @@ const userSchema: Schema<IRealtors> = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
       required: false,
+      unique:true
+
     },
     firstName: {
       type: String,

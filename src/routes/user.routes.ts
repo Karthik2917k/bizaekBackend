@@ -20,7 +20,7 @@ router.post("/auth/login",checkGuestAccess(), authController.login);
 
 // User Routes
 
-// router.get("/getUser", userController.getUser);
+router.get("/getUser",checkPermission() ,userController.getUser);
 // router.put("/updateUser", userController.updateUser);
 // router.put("/deleteAccount", userController.deleteAccount);
 
@@ -28,10 +28,15 @@ router.post("/auth/login",checkGuestAccess(), authController.login);
 // Accountant Routes
 
 router.post("/accountant/createAccountant",checkPermission(), accountantController.createAccountant);
-router.get("/getAllAccountant",checkGuestAccess(), accountantController.getAllAccountants);
-router.get("/getAccountantById",checkPermission(), accountantController.getAccountantById);
-router.get("/updateAccountant",checkPermission(), accountantController.updateAccountant);
-router.get("/deleteAccountant",checkPermission(), accountantController.deleteAccountant);
+router.get("/accountant/getAccountantProfile",checkPermission(), accountantController.getAccountantProfile);
+router.get("/accountant/updateAccountant",checkPermission(), accountantController.updateAccountant);
+router.get("/accountant/deleteAccountant",checkPermission(), accountantController.deleteAccountant);
+
+
+//public routes
+
+router.get("/public/getAllAccountant",checkGuestAccess(), accountantController.getAllAccountants);
+
 
 
 export default router;

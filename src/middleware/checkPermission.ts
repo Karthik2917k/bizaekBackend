@@ -1,19 +1,25 @@
 import { Request, Response, NextFunction } from "express";
 import { getUser } from "../util/getUsers";
 
+// Define an interface that extends Request with user property
 interface User {
-  [key: string]: any; // Allow additional properties
+  _id: string;
+  [key: string]: any; // Allow additional properties if necessary
+}
+
+interface IRequestWithUser extends Request {
+  user?: User;
 }
 
 export const checkPermission = () => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req:Request, res: Response, next: NextFunction) => {
     let token = req.headers.authorization;
 
     if (token) {
       token = token.replace("Bearer ", "");
 
       try {
-        const user = await getUser(token); // Await directly
+        const user:any = await getUser(token);
 
         if (user) {
           req.user = user;
@@ -31,4 +37,3 @@ export const checkPermission = () => {
     }
   };
 };
-

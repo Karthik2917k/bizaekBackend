@@ -1,10 +1,17 @@
 import { Request, Response } from 'express';
 import Accountants, { IAccountants } from '../../models/accountants.model';
 
-// Define an interface to extend the Request object
-interface IAccountantRequest extends Request {
-  user: { _id: string }; // Assuming req.user has _id as a string
+// Define the structure of req.user with user containing _id
+interface User {
+  _id: string;
 }
+
+interface IRequestWithUser extends Request {
+  user?: {
+    user: User;
+  };
+}
+
 
 export const getAllAccountants = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -35,17 +42,25 @@ export const getAccountantById = async (req: Request, res: Response): Promise<vo
   }
 };
 
-export const createAccountant = async (req: IAccountantRequest, res: Response): Promise<void> => {
+export const createAccountant = async (req: Request, res: Response): Promise<void> => {
   try {
-    if (!req.user) {
+    // Extract user from req.user
+    const userInfo:any = req.user;
+
+    // Check if userInfo and userInfo._id are valid
+    if (!userInfo || !userInfo._id) {
       res.status(401).json({ error: 'Unauthorized: User not authenticated' });
       return;
     }
-    
-    const newAccountant = new Accountants({ ...req.body, userId: req.user._id });
+
+    // Create new accountant with userId from userInfo
+    const newAccountant = new Accountants({ ...req.body, userId: userInfo._id });
     const savedAccountant = await newAccountant.save();
+
+    // Respond with the saved accountant
     res.status(201).json({ accountant: savedAccountant });
   } catch (err) {
+    // Handle and respond with the error message
     const error = err instanceof Error ? err.message : 'Unknown error';
     res.status(400).json({ error });
   }

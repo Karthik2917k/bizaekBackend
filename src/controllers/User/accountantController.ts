@@ -2,14 +2,8 @@ import { Request, Response } from 'express';
 import Accountants, { IAccountants } from '../../models/accountants.model';
 
 // Define the structure of req.user with user containing _id
-interface User {
-  _id: string;
-}
-
-interface IRequestWithUser extends Request {
-  user?: {
-    user: User;
-  };
+interface UserI {
+  _id?: string;
 }
 
 
@@ -45,10 +39,10 @@ export const getAccountantById = async (req: Request, res: Response): Promise<vo
 export const createAccountant = async (req: Request, res: Response): Promise<void> => {
   try {
     // Extract user from req.user
-    const userInfo:any = req.user;
+    const userInfo:UserI|undefined = req.user;
 
     // Check if userInfo and userInfo._id are valid
-    if (!userInfo || !userInfo._id) {
+    if (!userInfo) {
       res.status(401).json({ error: 'Unauthorized: User not authenticated' });
       return;
     }

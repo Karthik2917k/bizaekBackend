@@ -13,16 +13,16 @@ export const checkPermission = () => {
       token = token.replace("Bearer ", "");
 
       try {
-        await getUser(token, (user: User | null) => {
-          if (user) {
-            req.user = user;
-            next();
-          } else {
-            res.status(403).json({
-              message: "Forbidden: you don't have enough access to this content",
-            });
-          }
-        });
+        const user = await getUser(token); // Await directly
+
+        if (user) {
+          req.user = user;
+          next();
+        } else {
+          res.status(403).json({
+            message: "Forbidden: you don't have enough access to this content",
+          });
+        }
       } catch (error) {
         res.status(500).json({ message: "Internal Server Error", status: 500 });
       }
@@ -31,3 +31,4 @@ export const checkPermission = () => {
     }
   };
 };
+

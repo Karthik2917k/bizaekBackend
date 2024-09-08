@@ -10,9 +10,6 @@ export interface IUser extends Document {
   name?: string;
   email: string;
   password?: string;
-  profilePic?: string;
-  birthYear?: string;
-  gender?: string;
   status?: "ACTIVE" | "INACTIVE" | "BLOCKED";
 }
 
@@ -44,18 +41,6 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
       validate: [isEmail, "Invalid email"],
     },
     password: {
-      type: String,
-      // required: true,
-    },
-    profilePic: {
-      type: String,
-      default: "",
-    },
-    birthYear: {
-      type: String,
-      // required: true,
-    },
-    gender: {
       type: String,
       // required: true,
     },

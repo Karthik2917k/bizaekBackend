@@ -11,7 +11,7 @@ import passport from 'passport';
 import httpLogger  from "./util/createLogger";
 // import './helpers/passport-config';
 
-import authRoute from "./routes/user.routes"; 
+import userRoute from "./routes/user.routes"; 
 import utilRoute from "./routes/utils.routes"; 
 
 dotenv.config();
@@ -50,5 +50,5 @@ mongoose
   .catch((err) => console.log(err));
 
 // USER ROUTES
-app.use("/api/user/auth",checkGuestAccess(), authRoute);
+app.use("/api/user", userRoute);
 app.use("/api/util",checkGuestAccess(), utilRoute);

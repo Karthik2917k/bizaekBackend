@@ -1,14 +1,20 @@
 import { Router } from "express";
-import * as Controller from "../controllers/User/authController";
+import * as authController from "../controllers/User/authController";
+import * as userController from "../controllers/User/userController";
+import * as accountantController from "../controllers/User/accountantController";
+
+
+import { checkGuestAccess } from "../middleware/checkGuestAccess";
+import { checkPermission } from "../middleware/checkPermission";
+
 
 const router = Router();
 
 // Auth Routes
-// Uncomment and update these routes when you have corresponding methods in authController
 
-router.post("/register", Controller.register);
-router.post("/verifyOtpAndRegister", Controller.verifyOtpAndRegister);
-router.post("/login", Controller.login);
+router.post("/auth/register",checkGuestAccess(), authController.register);
+router.post("/auth/verifyOtpAndRegister",checkGuestAccess(), authController.verifyOtpAndRegister);
+router.post("/auth/login",checkGuestAccess(), authController.login);
 
 // router.post("/socialAuth", authController.socialAuth);
 
@@ -17,5 +23,15 @@ router.post("/login", Controller.login);
 // router.get("/getUser", userController.getUser);
 // router.put("/updateUser", userController.updateUser);
 // router.put("/deleteAccount", userController.deleteAccount);
+
+
+// Accountant Routes
+
+router.post("/accountant/createAccountant",checkPermission(), accountantController.createAccountant);
+router.get("/getAllAccountant",checkGuestAccess(), accountantController.getAllAccountants);
+router.get("/getAccountantById",checkPermission(), accountantController.getAccountantById);
+router.get("/updateAccountant",checkPermission(), accountantController.updateAccountant);
+router.get("/deleteAccountant",checkPermission(), accountantController.deleteAccountant);
+
 
 export default router;

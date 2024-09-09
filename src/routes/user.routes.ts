@@ -3,6 +3,7 @@ import * as authController from "../controllers/User/authController";
 import * as userController from "../controllers/User/userController";
 import * as accountantController from "../controllers/User/accountantController";
 import * as retailorController from "../controllers/User/retailorController";
+import * as templerController from "../controllers/User/templerController";
 
 
 import { checkGuestAccess } from "../middleware/checkGuestAccess";
@@ -33,7 +34,7 @@ router.get("/accountant/getAccountantProfile",checkPermission(), accountantContr
 router.get("/accountant/updateAccountant",checkPermission(), accountantController.updateAccountant);
 router.get("/accountant/deleteAccountant",checkPermission(), accountantController.deleteAccountant);
 
-// Accountant Routes
+// Retailor Routes
 
 router.post("/retailor/createRealtor",checkPermission(), retailorController.createRealtor);
 router.get("/retailor/getRealtorProfile",checkPermission(), retailorController.getRealtorProfile);
@@ -41,10 +42,19 @@ router.get("/retailor/updateRealtor",checkPermission(), retailorController.updat
 router.get("/retailor/deleteRealtor",checkPermission(), retailorController.deleteRealtor);
 
 
+// Templer Routes
+
+router.post("/templer/createTempler",checkPermission(), templerController.createTempler);
+router.get("/templer/getTemplerProfile",checkPermission(), templerController.getTemplerProfile);
+router.get("/templer/updateTempler",checkPermission(), templerController.updateTempler);
+router.get("/templer/deleteTempler",checkPermission(), templerController.deleteTempler);
+
+
 //public routes
 
 router.get("/public/getAllAccountant",checkGuestAccess(), accountantController.getAllAccountants);
 router.get("/public/getAllRealtors",checkGuestAccess(), retailorController.getAllRealtors);
+router.get("/public/getAllTemplers",checkGuestAccess(), templerController.getAllTemplers);
 
 
 

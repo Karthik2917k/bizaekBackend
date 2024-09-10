@@ -8,11 +8,13 @@ import dotenv from "dotenv";
 import { checkGuestAccess } from "./middleware/checkGuestAccess";
 import session from 'express-session';
 import passport from 'passport';
+import './helpers/passport-config'; // Import your passport configuration file
 import httpLogger  from "./util/createLogger";
 // import './helpers/passport-config';
 
 import userRoute from "./routes/user.routes"; 
 import utilRoute from "./routes/utils.routes"; 
+import oauthRoute from "./routes/oauth.routes"; 
 
 dotenv.config();
 
@@ -52,3 +54,6 @@ mongoose
 // USER ROUTES
 app.use("/api/user", userRoute);
 app.use("/api/util",checkGuestAccess(), utilRoute);
+app.use('/oauth', oauthRoute);
+
+

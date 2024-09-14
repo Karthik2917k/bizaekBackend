@@ -15,6 +15,7 @@ import httpLogger  from "./util/createLogger";
 import userRoute from "./routes/user.routes"; 
 import utilRoute from "./routes/utils.routes"; 
 import oauthRoute from "./routes/oauth.routes"; 
+import adminRoute from "./routes/admin.routes"; 
 
 dotenv.config();
 
@@ -50,6 +51,10 @@ mongoose
     });
   })
   .catch((err) => console.log(err));
+
+
+// ADMIN ROUTES
+app.use("/api/admin", adminRoute);
 
 // USER ROUTES
 app.use("/api/user", userRoute);

@@ -10,6 +10,7 @@ export interface IUser extends Document {
   name?: string;
   email: string;
   password?: string;
+  profilePic?: string;
   status?: "ACTIVE" | "INACTIVE" | "BLOCKED";
 }
 
@@ -43,6 +44,10 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     password: {
       type: String,
       // required: true,
+    },
+    profilePic: {
+      type: String,
+      default:""
     },
     status: {
       type: String,

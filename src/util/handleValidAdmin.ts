@@ -1,6 +1,6 @@
-import User from "../models/user.model";
+import User from "../models/admin.model";
 
-export const handleValidUser = async (id: string): Promise<boolean | false> => {
+export const handleValidAdmin = async (id: string): Promise<boolean | false> => {
   try {
     const userData = await User.findOne({_id:id}).exec();
     if (!userData) {

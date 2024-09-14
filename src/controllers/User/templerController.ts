@@ -6,17 +6,65 @@ interface UserI {
   _id?: string;
 }
 
-export const getAllTemplers = async (req: Request, res: Response): Promise<void> => {
+export const getAllTemplersPublic = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { agent, type, languages, location } = req.query;
-    const templers = await Templers.find({ deleted: false });
+    const { name = '', languages = '', location = '', page = '1', limit = '10' } = req.query;
 
-    res.status(200).json({ status: 200, message: 'Templers retrieved successfully', templers });
+    // Convert query parameters to their appropriate types
+    const pageNumber = parseInt(page as string, 10) || 1;
+    const pageSize = parseInt(limit as string, 10) || 10;
+    const skip = (pageNumber - 1) * pageSize;
+
+    // Create filter object
+    const filter: any = {
+      deleted: false,
+      status: "ACTIVE",
+    };
+
+    // Name filter (combined first and last names)
+    if (name) {
+      filter.$or = [
+        { firstName: { $regex: name, $options: 'i' } },
+        { lastName: { $regex: name, $options: 'i' } },
+        { $expr: { $regexMatch: { input: { $concat: ['$firstName', ' ', '$lastName'] }, regex: name, options: 'i' } } }
+      ];
+    }
+
+    // Location filter (regex-based)
+    if (typeof location === 'string' && location) {
+      const locationRegex = new RegExp(location, 'i'); // Case-insensitive regex
+      filter.$or = [
+        { state: { $regex: locationRegex } },
+        { city: { $regex: locationRegex } },
+        { country: { $regex: locationRegex } }
+      ];
+    }
+
+    // Languages filter (multiple languages)
+    if (languages) {
+      const languageArray = (languages as string).split(',').map(lang => lang.trim());
+      filter.languages = { $in: languageArray };
+    }
+    const templers = await Templers.find(filter)
+    .select('profilePic lastName firstName userId status city state country languages company')
+    .skip(skip)
+    .limit(pageSize);
+
+  // Fetch total count for pagination purposes
+  const totalTemplers = await Templers.countDocuments(filter);
+
+  res.status(200).json({
+    templers,
+    totalPages: Math.ceil(totalTemplers / pageSize),
+    currentPage: pageNumber,
+    totalTemplers,
+  });
   } catch (err) {
     const error = err instanceof Error ? err.message : 'Unknown error';
     res.status(400).json({ status: 400, error });
   }
 };
+
 
 export const getTemplerProfile = async (req: Request, res: Response): Promise<void> => {
   try {

@@ -65,6 +65,26 @@ export const getAllRealtorsPublic = async (req: Request, res: Response): Promise
   }
 };
 
+export const getRealtorById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Extract ID from request parameters
+    const { id } = req.query;
+
+    // Fetch realtor by ID
+    const realtor = await Realtors.findById(id);
+
+    if (!realtor) {
+      res.status(404).json({ message: 'Realtor not found', status: 404 });
+      return;
+    }
+
+    res.status(200).json({ realtor });
+  } catch (err) {
+    const error = err instanceof Error ? err.message : 'Unknown error';
+    res.status(400).json({ error });
+  }
+};
+
 
 
 export const getRealtorProfile = async (req: Request, res: Response): Promise<void> => {

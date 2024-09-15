@@ -65,6 +65,26 @@ export const getAllTemplersPublic = async (req: Request, res: Response): Promise
   }
 };
 
+export const getTemplerById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Extract ID from request parameters
+    const { id } = req.query;
+
+    // Fetch templer by ID
+    const templer = await Templers.findById(id);
+
+    if (!templer) {
+      res.status(404).json({ message: 'Templer not found', status: 404 });
+      return;
+    }
+
+    res.status(200).json({ templer });
+  } catch (err) {
+    const error = err instanceof Error ? err.message : 'Unknown error';
+    res.status(400).json({ error });
+  }
+};
+
 
 export const getTemplerProfile = async (req: Request, res: Response): Promise<void> => {
   try {

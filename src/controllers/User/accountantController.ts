@@ -72,6 +72,26 @@ export const getAllAccountantsPublic = async (req: Request, res: Response): Prom
   }
 };
 
+export const getAccountantById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Extract ID from request parameters
+    const { id } = req.query;
+
+    // Fetch accountant by ID
+    const accountant = await Accountants.findById(id);
+
+    if (!accountant) {
+      res.status(404).json({ message: 'Accountant not found', status: 404 });
+      return;
+    }
+
+    res.status(200).json({ accountant });
+  } catch (err) {
+    const error = err instanceof Error ? err.message : 'Unknown error';
+    res.status(400).json({ error });
+  }
+};
+
 //User Controllers
 
 export const getAccountantProfile = async (req: Request, res: Response): Promise<void> => {

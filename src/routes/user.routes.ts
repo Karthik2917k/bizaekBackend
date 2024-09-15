@@ -53,8 +53,11 @@ router.get("/templer/deleteTempler",checkPermission(), templerController.deleteT
 //public routes
 
 router.get("/public/getAllAccountant",checkGuestAccess(), accountantController.getAllAccountantsPublic);
+router.get("/public/getAccountantById",checkGuestAccess(), accountantController.getAccountantById);
 router.get("/public/getAllRealtors",checkGuestAccess(), retailorController.getAllRealtorsPublic);
+router.get("/public/getRealtorById",checkGuestAccess(), retailorController.getRealtorById);
 router.get("/public/getAllTemplers",checkGuestAccess(), templerController.getAllTemplersPublic);
+router.get("/public/getTemplerById",checkGuestAccess(), templerController.getTemplerById);
 
 
 

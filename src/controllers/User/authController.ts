@@ -79,8 +79,7 @@ export const verifyOtpAndRegister = async (req: Request, res: Response) => {
 
     // Find OTP record
     const otpVerification = await ResetPassword.findOne({
-      email,
-      reason: "Register",
+      email:email
     });
 
     // Ensure otpVerification is defined

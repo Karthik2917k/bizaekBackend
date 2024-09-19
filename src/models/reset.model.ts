@@ -6,7 +6,7 @@ interface IResetPassword extends Document {
   email: string;
   name: string;
   password: string;
-  otp?: number;
+  otp?: string;
   expirationTime?: number;
   reason: "Reset" | "Login" | "Update" | "Register";
   createdAt?: Date;
@@ -29,7 +29,7 @@ const resetPasswordSchema = new Schema<IResetPassword>(
       type: String,
     },
     otp: {
-      type: Number,
+      type: String,
     },
     expirationTime: {
       type: Number,

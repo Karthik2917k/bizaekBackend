@@ -54,14 +54,15 @@ export const login = [
           const token = await createTokenAdmin(user);
 
           res.cookie('token', token, {
-            httpOnly: true, // More secure, cookie won't be accessible via JavaScript
-            maxAge: 24 * 60 * 60 * 1000, // 1 day expiry
-            secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-            sameSite: 'lax', // Cookie sent only to same-site requests
+            httpOnly: false,   // Prevents JavaScript access
+            secure: false,    // Set to false for local development (HTTP)
+            sameSite: 'none',  // Lax allows cookies to be sent on top-level navigation
+            path: '/',        // Available throughout the application
+            maxAge: 24 * 60 * 60 * 1000 * 7// 7 day in milliseconds
           });
           return res.status(200).json({
             status: 200,
-            message: 'Login Successfully',
+            message: 'Login Successfully',token
             
           });
         } else {

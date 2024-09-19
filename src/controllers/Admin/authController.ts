@@ -52,10 +52,17 @@ export const login = [
         const auth = await bcrypt.compare(password, user.password);
         if (auth) {
           const token = await createTokenAdmin(user);
+
+          res.cookie('token', token, {
+            httpOnly: true, // More secure, cookie won't be accessible via JavaScript
+            maxAge: 24 * 60 * 60 * 1000, // 1 day expiry
+            secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+            sameSite: 'lax', // Cookie sent only to same-site requests
+          });
           return res.status(200).json({
             status: 200,
             message: 'Login Successfully',
-            token,
+            
           });
         } else {
           return res.status(400).json({
@@ -110,7 +117,7 @@ export const sendResetLink = async (req: Request, res: Response) => {
         Link: ${resetLink}
 
         Thanks 
-        Fantasy Pickelball Team`,
+        Fantasy Bizaek Team`,
     };
     await sendEmail(mailOptions);
 

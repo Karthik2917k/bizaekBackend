@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
+import cookieParser from 'cookie-parser';
 import cors from "cors";
 import https from "https";
 import http from "http";
@@ -24,9 +25,29 @@ dotenv.config();
 const app = express();
 let server: http.Server | https.Server = http.createServer(app);
 
+
+
 app.get("/", (req: Request, res: Response) => res.send("Working!!!"));
 
-app.use(cors());
+// Extract CORS_ORIGIN from environment variable and split it into an array
+const allowedOrigins = process.env.CORS_ORIGIN?.split(',');
+
+const corsOptions: cors.CorsOptions = {
+  origin: (origin, callback) => {
+    // Check if the origin is in the allowedOrigins array or if no origin (for non-browser requests)
+    if (!origin || allowedOrigins?.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+};
+
+// Use CORS middleware with options
+app.use(cors(corsOptions));
+// Initialize cookie-parser middleware
+app.use(cookieParser());
 app.use(express.static("public"));
 app.use(express.json());
 app.use(bodyParser.json());

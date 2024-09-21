@@ -8,7 +8,6 @@ export interface IAccountants extends Document {
   firstName?: string;
   lastName?: string;
   profilePic?: string;
-
   countryCode?: number;
   phone?: number;
   email: string;

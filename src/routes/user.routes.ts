@@ -5,6 +5,7 @@ import * as accountantController from "../controllers/User/accountantController"
 import * as retailorController from "../controllers/User/retailorController";
 import * as templerController from "../controllers/User/templerController";
 import * as subscriptionController from "../controllers/Admin/subscriptionController";
+import * as paymentController from "../controllers/User/paymentController";
 
 
 import { checkGuestAccess } from "../middleware/checkGuestAccess";
@@ -32,28 +33,29 @@ router.get("/getUser", checkPermission(), userController.getUser);
 
 router.post("/accountant/createAccountant", checkPermission(), accountantController.createAccountant);
 router.get("/accountant/getAccountantProfile", checkPermission(), accountantController.getAccountantProfile);
-router.get("/accountant/updateAccountant", checkPermission(), accountantController.updateAccountant);
-router.get("/accountant/deleteAccountant", checkPermission(), accountantController.deleteAccountant);
+router.put("/accountant/updateAccountant", checkPermission(), accountantController.updateAccountant);
+router.put("/accountant/deleteAccountant", checkPermission(), accountantController.deleteAccountant);
 
 // Retailor Routes
 
 router.post("/retailor/createRealtor", checkPermission(), retailorController.createRealtor);
 router.get("/retailor/getRealtorProfile", checkPermission(), retailorController.getRealtorProfile);
-router.get("/retailor/updateRealtor", checkPermission(), retailorController.updateRealtor);
-router.get("/retailor/deleteRealtor", checkPermission(), retailorController.deleteRealtor);
+router.put("/retailor/updateRealtor", checkPermission(), retailorController.updateRealtor);
+router.put("/retailor/deleteRealtor", checkPermission(), retailorController.deleteRealtor);
 
 
 // Templer Routes
 
 router.post("/templer/createTempler", checkPermission(), templerController.createTempler);
 router.get("/templer/getTemplerProfile", checkPermission(), templerController.getTemplerProfile);
-router.get("/templer/updateTempler", checkPermission(), templerController.updateTempler);
-router.get("/templer/deleteTempler", checkPermission(), templerController.deleteTempler);
+router.put("/templer/updateTempler", checkPermission(), templerController.updateTempler);
+router.put("/templer/deleteTempler", checkPermission(), templerController.deleteTempler);
 
 
 //Subscription routes
 
 router.get("/subscription/getAllSubscriptions", checkPermission(), subscriptionController.getAllSubscriptions);
+router.post("/subscription/buySubscription", checkPermission(), paymentController.buySubscription);
 
 //public routes
 

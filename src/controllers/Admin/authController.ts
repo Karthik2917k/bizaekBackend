@@ -55,9 +55,8 @@ export const login = [
 
           res.cookie('token', token, {
             httpOnly: false,   // Prevents JavaScript access
-            secure: false,    // Set to false for local development (HTTP)
+            secure: true,    // Set to false for local development (HTTP)
             sameSite: 'none',  // Lax allows cookies to be sent on top-level navigation
-            path: '/',        // Available throughout the application
             maxAge: 24 * 60 * 60 * 1000 * 7// 7 day in milliseconds
           });
           return res.status(200).json({

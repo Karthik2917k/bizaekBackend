@@ -46,19 +46,19 @@ export const getAllTemplersPublic = async (req: Request, res: Response): Promise
       filter.languages = { $in: languageArray };
     }
     const templers = await Templers.find(filter)
-    .select('profilePic lastName firstName userId status city state country languages company')
-    .skip(skip)
-    .limit(pageSize);
+      .select('profilePic lastName firstName userId status city state country languages company')
+      .skip(skip)
+      .limit(pageSize);
 
-  // Fetch total count for pagination purposes
-  const totalTemplers = await Templers.countDocuments(filter);
+    // Fetch total count for pagination purposes
+    const totalTemplers = await Templers.countDocuments(filter);
 
-  res.status(200).json({
-    templers,
-    totalPages: Math.ceil(totalTemplers / pageSize),
-    currentPage: pageNumber,
-    totalTemplers,
-  });
+    res.status(200).json({
+      templers,
+      totalPages: Math.ceil(totalTemplers / pageSize),
+      currentPage: pageNumber,
+      totalTemplers,
+    });
   } catch (err) {
     const error = err instanceof Error ? err.message : 'Unknown error';
     res.status(400).json({ status: 400, error });
@@ -135,9 +135,16 @@ export const createTempler = async (req: Request, res: Response): Promise<void> 
 
 export const updateTempler = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const userInfo: UserI | undefined = req.user;
 
-    const updatedTempler = await Templers.findByIdAndUpdate(id, { ...req.body }, { new: true });
+    // Check if userInfo and userInfo._id are valid
+    if (!userInfo) {
+      res.status(401).json({ error: 'Unauthorized: User not authenticated' });
+      return;
+    }
+
+    const updatedTempler = await Templers.findOneAndUpdate(
+      { userId: userInfo._id }, { ...req.body }, { new: true });
 
     if (!updatedTempler) {
       res.status(404).json({ status: 404, message: 'Templer not found' });
@@ -153,9 +160,16 @@ export const updateTempler = async (req: Request, res: Response): Promise<void> 
 
 export const deleteTempler = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const userInfo: UserI | undefined = req.user;
 
-    const updatedTempler = await Templers.findByIdAndUpdate(id, { deleted: true }, { new: true });
+    // Check if userInfo and userInfo._id are valid
+    if (!userInfo) {
+      res.status(401).json({ error: 'Unauthorized: User not authenticated' });
+      return;
+    }
+
+    const updatedTempler = await Templers.findOneAndUpdate(
+      {userId:userInfo._id}, { deleted: true }, { new: true });
 
     if (!updatedTempler) {
       res.status(404).json({ status: 404, message: 'Templer not found' });

@@ -141,10 +141,16 @@ export const createRealtor = async (req: Request, res: Response): Promise<void> 
 
 export const updateRealtor = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const userInfo: UserI | undefined = req.user;
 
-    const updatedRealtor = await Realtors.findByIdAndUpdate(
-      id,
+    // Check if userInfo and userInfo._id are valid
+    if (!userInfo) {
+      res.status(401).json({ error: 'Unauthorized: User not authenticated' });
+      return;
+    }
+
+    const updatedRealtor = await Realtors.findOneAndUpdate(
+      {userId:userInfo._id},
       { ...req.body },
       { new: true }
     );
@@ -163,10 +169,16 @@ export const updateRealtor = async (req: Request, res: Response): Promise<void> 
 
 export const deleteRealtor = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const userInfo: UserI | undefined = req.user;
 
-    const updatedRealtor = await Realtors.findByIdAndUpdate(
-      id,
+    // Check if userInfo and userInfo._id are valid
+    if (!userInfo) {
+      res.status(401).json({ error: 'Unauthorized: User not authenticated' });
+      return;
+    }
+
+    const updatedRealtor = await Realtors.findOneAndUpdate(
+      {userId:userInfo._id},
       { deleted: true },
       { new: true }
     );

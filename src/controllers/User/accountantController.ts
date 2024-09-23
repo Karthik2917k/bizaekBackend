@@ -190,8 +190,8 @@ export const deleteAccountant = async (req: Request, res: Response): Promise<voi
       return;
     }
 
-    const updatedAccountant = await Accountants.findByIdAndUpdate(
-      userInfo._id,
+    const updatedAccountant = await Accountants.findOneAndUpdate(
+      {userId:userInfo._id},
       { deleted: true },
       { new: true }
     );

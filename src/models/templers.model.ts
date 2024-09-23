@@ -13,9 +13,6 @@ export interface ITemplers extends Document {
   email: string;
   institution?: string;
   category?: string[];
-  linkedin?: string;
-  instagram?: string;
-  facebook?: string;
   about?: string;
   languages?: string[];
   cultures?: string[];
@@ -35,7 +32,7 @@ const userSchema: Schema<ITemplers> = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
       required: false,
-      unique:true
+      unique: true
     },
     firstName: {
       type: String,
@@ -45,7 +42,7 @@ const userSchema: Schema<ITemplers> = new mongoose.Schema(
     },
     profilePic: {
       type: String,
-      default:""
+      default: ""
     },
     countryCode: {
       type: Number,
@@ -63,15 +60,6 @@ const userSchema: Schema<ITemplers> = new mongoose.Schema(
       type: String,
     }],
     institution: {
-      type: String,
-    },
-    linkedin: {
-      type: String,
-    },
-    instagram: {
-      type: String,
-    },
-    facebook: {
       type: String,
     },
     about: {
@@ -92,7 +80,7 @@ const userSchema: Schema<ITemplers> = new mongoose.Schema(
         type: String,
       },
     ],
-   
+
     address: {
       type: String,
     },

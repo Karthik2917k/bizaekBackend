@@ -14,7 +14,7 @@ const logger: Logger = createLogger({
       )
     }),
     new transports.File({
-      filename: `./logs/${dateFormat(new Date(), 'yyyy-MM-dd_HH-mm-ss')}.log`,
+      filename: `./src/logs/${dateFormat(new Date(), 'yyyy-MM-dd_HH-mm-ss')}.log`,
       format: format.combine(
         format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
         format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)

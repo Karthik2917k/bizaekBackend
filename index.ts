@@ -6,18 +6,18 @@ import cors from "cors";
 import https from "https";
 import http from "http";
 import dotenv from "dotenv";
-import { checkGuestAccess } from "./middleware/checkGuestAccess";
+import { checkGuestAccess } from "./src/middleware/checkGuestAccess";
 import session from 'express-session';
 import passport from 'passport';
-import './helpers/passport-config'; // Import your passport configuration file
-import httpLogger  from "./util/createLogger";
+import './src/helpers/passport-config'; // Import your passport configuration file
+import httpLogger  from "./src/util/createLogger";
 // import './helpers/passport-config';
 
-import userRoute from "./routes/user.routes"; 
-import utilRoute from "./routes/utils.routes"; 
-import oauthRoute from "./routes/oauth.routes"; 
-import adminRoute from "./routes/admin.routes"; 
-import masterdataRoute from "./routes/masterdata.routes"; 
+import userRoute from "./src/routes/user.routes"; 
+import utilRoute from "./src/routes/utils.routes"; 
+import oauthRoute from "./src/routes/oauth.routes"; 
+import adminRoute from "./src/routes/admin.routes"; 
+import masterdataRoute from "./src/routes/masterdata.routes"; 
 
 dotenv.config();
 

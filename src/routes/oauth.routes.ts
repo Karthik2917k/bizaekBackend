@@ -16,7 +16,14 @@ router.get(
   async (req, res) => {
     if (req.user) {
       const token = await createTokenUser(req.user as IUser); // Now passing IUser-compliant object
-      res.redirect(`/dashboard?token=${token}`); // Redirect after successful login
+      const redirectUrl = process.env.GOOGLE_REDIRECT_URL as string;
+      res.cookie("token", token, {
+        httpOnly: false,
+        sameSite: "none",
+        secure: true,
+        maxAge: 1 * 24 * 60 * 60 * 1000,
+      });
+      res.redirect(`${redirectUrl}`); // Redirect after successful login
     } else {
       res.redirect('/'); // Handle the case where `req.user` is undefined
     }

@@ -18,10 +18,10 @@ router.get(
       const token = await createTokenUser(req.user as IUser); // Now passing IUser-compliant object
       const redirectUrl = process.env.GOOGLE_REDIRECT_URL as string;
       res.cookie("token", token, {
-        httpOnly: false,
-        sameSite: "none",
-        secure: true,
-        maxAge: 1 * 24 * 60 * 60 * 1000,
+        httpOnly: true,   // Prevents JavaScript access
+        secure: true,    // Set to false for local development (HTTP)
+        sameSite: 'lax',  // Lax allows cookies to be sent on top-level navigation
+        maxAge: 24 * 60 * 60 * 1000 * 7
       });
       res.redirect(`${redirectUrl}`); // Redirect after successful login
     } else {

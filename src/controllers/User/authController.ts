@@ -105,11 +105,10 @@ export const verifyOtpAndRegister = async (req: Request, res: Response) => {
     await ResetPassword.deleteOne({ email, reason: "Register" });
 
     res.cookie('token', token, {
-      httpOnly: false,   // Prevents JavaScript access
+      httpOnly: true,   // Prevents JavaScript access
       secure: true,    // Set to false for local development (HTTP)
-      sameSite: 'none',  // Lax allows cookies to be sent on top-level navigation
-      path: '/',        // Available throughout the application
-      maxAge: 24 * 60 * 60 * 1000 * 7// 7 day in milliseconds
+      sameSite: 'lax',  // Lax allows cookies to be sent on top-level navigation
+      maxAge: 24 * 60 * 60 * 1000 * 7
     });
     res.status(201).json({ status:201,message:"Register Successfully" ,token});
   } catch (err: any) {
@@ -157,11 +156,10 @@ export const login = [
         // const userWithoutPassword = await User.findById(user._id).select('-password');
         const token = await createTokenUser(user as IUser);
         res.cookie('token', token, {
-          httpOnly: false,   // Prevents JavaScript access
+          httpOnly: true,   // Prevents JavaScript access
           secure: true,    // Set to false for local development (HTTP)
-          sameSite: 'none',  // Lax allows cookies to be sent on top-level navigation
-          path: '/',        // Available throughout the application
-          maxAge: 24 * 60 * 60 * 1000 * 7// 7 day in milliseconds
+          sameSite: 'lax',  // Lax allows cookies to be sent on top-level navigation
+          maxAge: 24 * 60 * 60 * 1000 * 7
         });
         res.status(200).json({ status:200,message: "Login Successfully" ,token});
       } else {

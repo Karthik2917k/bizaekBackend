@@ -22,7 +22,8 @@ router.get(
         secure: true,
         domain: '.bizaek.com', // Allow cookie for subdomains    // Set to false for local development (HTTP)
         sameSite: 'lax',  // Lax allows cookies to be sent on top-level navigation
-        maxAge: 24 * 60 * 60 * 1000 * 7
+        maxAge: 24 * 60 * 60 * 1000 * 7,
+        path: '/',  // Ensure the cookie is available on all paths
       });
       res.redirect(`${redirectUrl}`); // Redirect after successful login
     } else {

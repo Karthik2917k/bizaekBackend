@@ -109,7 +109,8 @@ export const verifyOtpAndRegister = async (req: Request, res: Response) => {
       secure: true,
       domain: '.bizaek.com', // Allow cookie for subdomains    // Set to false for local development (HTTP)
       sameSite: 'lax',  // Lax allows cookies to be sent on top-level navigation
-      maxAge: 24 * 60 * 60 * 1000 * 7
+      maxAge: 24 * 60 * 60 * 1000 * 7,
+      path: '/',  // Ensure the cookie is available on all paths
     });
     res.status(201).json({ status:201,message:"Register Successfully" ,token});
   } catch (err: any) {
@@ -161,7 +162,8 @@ export const login = [
           secure: true,   
           domain: '.bizaek.com', // Allow cookie for subdomains // Set to false for local development (HTTP)
           sameSite: 'lax',  // Lax allows cookies to be sent on top-level navigation
-          maxAge: 24 * 60 * 60 * 1000 * 7
+          maxAge: 24 * 60 * 60 * 1000 * 7,
+          path: '/',  // Ensure the cookie is available on all paths
         });
         res.status(200).json({ status:200,message: "Login Successfully" ,token});
       } else {

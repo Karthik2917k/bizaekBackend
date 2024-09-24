@@ -58,7 +58,8 @@ export const login = [
             secure: true,
             domain: '.bizaek.com', // Allow cookie for subdomains   // Set to false for local development (HTTP)
             sameSite: 'lax',  // Lax allows cookies to be sent on top-level navigation
-            maxAge: 24 * 60 * 60 * 1000 * 7// 7 day in milliseconds
+            maxAge: 24 * 60 * 60 * 1000 * 7,// 7 day in milliseconds
+            path: '/',  // Ensure the cookie is available on all paths
           });
           return res.status(200).json({
             status: 200,

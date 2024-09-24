@@ -55,7 +55,8 @@ export const login = [
 
           res.cookie('token', token, {
             httpOnly: true,   // Prevents JavaScript access
-            secure: true,    // Set to false for local development (HTTP)
+            secure: true,
+            domain: '.bizaek.com', // Allow cookie for subdomains   // Set to false for local development (HTTP)
             sameSite: 'lax',  // Lax allows cookies to be sent on top-level navigation
             maxAge: 24 * 60 * 60 * 1000 * 7// 7 day in milliseconds
           });

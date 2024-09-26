@@ -3,6 +3,7 @@ import * as clientController from "../controllers/Admin/Masterdata/clientControl
 import * as cultureController from "../controllers/Admin/Masterdata/cultureController";
 import * as expertiseController from "../controllers/Admin/Masterdata/expertiseController";
 import * as languagesController from "../controllers/Admin/Masterdata/languagesController";
+import * as accountantTypeController from "../controllers/Admin/Masterdata/accountantTypeController";
 
 import { checkGuestAccess } from "../middleware/checkGuestAccess";
 import { checkAdminPermission } from "../middleware/checkAdminToken";
@@ -39,6 +40,14 @@ router.post("/language/createLanguage", checkAdminPermission(), languagesControl
 router.put("/language/updateLanguage", checkAdminPermission(), languagesController.updateLanguage);
 router.delete("/language/deleteLanguage", checkAdminPermission(), languagesController.deleteLanguage);
 
+
+// Accountant Type Routes
+router.get("/accountantType/getAllAccountantTypes", checkAdminPermission(), accountantTypeController.getAllAccountantTypes);
+router.get("/accountantType/getAccountantTypeById", checkAdminPermission(), accountantTypeController.getAccountantTypeById);
+router.post("/accountantType/createAccountantType", checkAdminPermission(), accountantTypeController.createAccountantType); 
+router.put("/accountantType/updateAccountantType", checkAdminPermission(), accountantTypeController.updateAccountantType);
+router.delete("/accountantType/deleteAccountantType", checkAdminPermission(), accountantTypeController.deleteAccountantType);
+
 // Public Routes
 
 // Client Public Routes
@@ -52,5 +61,8 @@ router.get("/public/getAllExpertise", checkGuestAccess(), expertiseController.ge
 
 // Language Public Routes
 router.get("/public/getAllLanguages", checkGuestAccess(), languagesController.getAllLanguages);
+
+// Accountant Type Public Routes
+router.get("/public/getAllAccountantTypes", checkGuestAccess(), accountantTypeController.getAllAccountantTypes);
 
 export default router;

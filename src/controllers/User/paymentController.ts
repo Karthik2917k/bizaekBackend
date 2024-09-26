@@ -18,6 +18,8 @@ export const buySubscription = async (req: Request, res: Response): Promise<Resp
     try {
         const { amount, subscriptionId, userId } = req.body;
         console.log('amount:', amount)
+        // console.log('process.env.STRIPE_APP_URL:', process.env.STRIPE_APP_URL)
+
 
   
 
@@ -63,8 +65,8 @@ export const buySubscription = async (req: Request, res: Response): Promise<Resp
                     quantity: 1,
                 },
             ],
-            success_url: `${process.env.WEB_APP_URL}/#/payment/success/sent`,
-            cancel_url: `${process.env.WEB_APP_URL}/#/payment/failed`,
+            success_url: `https://temple.bizaek.com/#/payment/success/sent`,
+            cancel_url: `https://temple.bizaek.com/#/payment/failed`,
             metadata,
         });
 

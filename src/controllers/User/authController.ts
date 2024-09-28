@@ -8,6 +8,10 @@ import { validationResult } from "express-validator";
 import bcrypt from "bcryptjs";
 import { generateNumericOTP } from "../../helpers/common"
 import { sendEmail } from "../../util/sendEmail"
+import dotenv from "dotenv";
+
+dotenv.config();
+
 
 // Interface for Register Request Body
 interface RegisterRequestBody {
@@ -104,13 +108,22 @@ export const verifyOtpAndRegister = async (req: Request, res: Response) => {
     // Remove OTP record after successful verification
     await ResetPassword.deleteOne({ email, reason: "Register" });
 
-    res.cookie('token', token, {
+    const environment = process.env.ENVIRONMENT
+
+
+    environment === "production" ? res.cookie('token', token, {
       httpOnly: true,   // Prevents JavaScript access
       secure: true,
-      domain: '.bizaek.com', // Allow cookie for subdomains    // Set to false for local development (HTTP)
+      domain: '.bizaek.com', // Allow cookie for subdomains   // Set to false for local development (HTTP)
       sameSite: 'lax',  // Lax allows cookies to be sent on top-level navigation
-      maxAge: 24 * 60 * 60 * 1000 * 7,
+      maxAge: 24 * 60 * 60 * 1000 * 7,// 7 day in milliseconds
       path: '/',  // Ensure the cookie is available on all paths
+    }) : res.cookie('token', token, {
+      httpOnly: false,   // Prevents JavaScript access
+      secure: true,    // Set to false for local development (HTTP)
+      sameSite: 'none',  // Lax allows cookies to be sent on top-level navigation
+      path: '/',        // Available throughout the application
+      maxAge: 24 * 60 * 60 * 1000 * 7// 7 day in milliseconds
     });
     res.status(201).json({ status:201,message:"Register Successfully" ,token});
   } catch (err: any) {
@@ -157,14 +170,24 @@ export const login = [
 
         // const userWithoutPassword = await User.findById(user._id).select('-password');
         const token = await createTokenUser(user as IUser);
-        res.cookie('token', token, {
-          httpOnly: true,   // Prevents JavaScript access
-          secure: true,   
-          domain: '.bizaek.com', // Allow cookie for subdomains // Set to false for local development (HTTP)
-          sameSite: 'lax',  // Lax allows cookies to be sent on top-level navigation
-          maxAge: 24 * 60 * 60 * 1000 * 7,
-          path: '/',  // Ensure the cookie is available on all paths
-        });
+
+         const environment = process.env.ENVIRONMENT
+
+
+          environment === "production" ? res.cookie('token', token, {
+            httpOnly: true,   // Prevents JavaScript access
+            secure: true,
+            domain: '.bizaek.com', // Allow cookie for subdomains   // Set to false for local development (HTTP)
+            sameSite: 'lax',  // Lax allows cookies to be sent on top-level navigation
+            maxAge: 24 * 60 * 60 * 1000 * 7,// 7 day in milliseconds
+            path: '/',  // Ensure the cookie is available on all paths
+          }) : res.cookie('token', token, {
+            httpOnly: false,   // Prevents JavaScript access
+            secure: true,    // Set to false for local development (HTTP)
+            sameSite: 'none',  // Lax allows cookies to be sent on top-level navigation
+            path: '/',        // Available throughout the application
+            maxAge: 24 * 60 * 60 * 1000 * 7// 7 day in milliseconds
+          });
         res.status(200).json({ status:200,message: "Login Successfully" ,token});
       } else {
         throw new Error("Please enter registered email");

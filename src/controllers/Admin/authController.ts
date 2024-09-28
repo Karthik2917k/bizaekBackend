@@ -6,6 +6,10 @@ import User from '../../models/admin.model';
 import ResetPassword from '../../models/reset.model';
 import { createTokenAdmin } from '../../middleware/createTokenAdmin';
 import { sendEmail } from '../../util/sendEmail';
+import dotenv from "dotenv";
+
+dotenv.config();
+
 
 // Register Admin
 export const register = [
@@ -53,18 +57,27 @@ export const login = [
         if (auth) {
           const token = await createTokenAdmin(user);
 
-          res.cookie('token', token, {
+          const environment = process.env.ENVIRONMENT
+
+
+          environment === "production" ? res.cookie('token', token, {
             httpOnly: true,   // Prevents JavaScript access
             secure: true,
             domain: '.bizaek.com', // Allow cookie for subdomains   // Set to false for local development (HTTP)
             sameSite: 'lax',  // Lax allows cookies to be sent on top-level navigation
             maxAge: 24 * 60 * 60 * 1000 * 7,// 7 day in milliseconds
             path: '/',  // Ensure the cookie is available on all paths
+          }) : res.cookie('token', token, {
+            httpOnly: false,   // Prevents JavaScript access
+            secure: true,    // Set to false for local development (HTTP)
+            sameSite: 'none',  // Lax allows cookies to be sent on top-level navigation
+            path: '/',        // Available throughout the application
+            maxAge: 24 * 60 * 60 * 1000 * 7// 7 day in milliseconds
           });
           return res.status(200).json({
             status: 200,
-            message: 'Login Successfully',token
-            
+            message: 'Login Successfully', token
+
           });
         } else {
           return res.status(400).json({

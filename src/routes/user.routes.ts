@@ -6,6 +6,7 @@ import * as retailorController from "../controllers/User/retailorController";
 import * as templerController from "../controllers/User/templerController";
 import * as subscriptionController from "../controllers/Admin/subscriptionController";
 import * as paymentController from "../controllers/User/paymentController";
+import * as locationController from "../controllers/User/locationController";
 
 
 import { checkGuestAccess } from "../middleware/checkGuestAccess";
@@ -67,6 +68,11 @@ router.get("/public/getAllTemplers", checkGuestAccess(), templerController.getAl
 router.get("/public/getTemplerById", checkGuestAccess(), templerController.getTemplerById);
 
 
+//location Routes
+
+router.get('/location/countries', locationController.getAllCountries);
+router.get('/location/countries/:countryId/states', locationController.getStatesByCountry);
+router.get('/location/states/:stateId/cities', locationController.getCitiesByState);
 
 
 

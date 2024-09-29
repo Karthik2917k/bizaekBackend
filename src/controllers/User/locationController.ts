@@ -6,7 +6,7 @@ import City, { ICity } from '../../../src/models/city.model';
 // Get all countries
 export const getAllCountries = async (req: Request, res: Response): Promise<void> => {
   try {
-    const countries = await Country.find({ deleted: false }).select('name iso2 iso3 capital');
+    const countries = await Country.find({ deleted: false }).select('name id');
 
     res.status(200).json({ countries });
   } catch (err) {

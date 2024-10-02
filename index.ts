@@ -18,7 +18,6 @@ import utilRoute from "./src/routes/utils.routes";
 import oauthRoute from "./src/routes/oauth.routes";
 import adminRoute from "./src/routes/admin.routes";
 import masterdataRoute from "./src/routes/masterdata.routes";
-import { createCity, createCountry, createState } from "./src/controllers/User/locationController";
 
 dotenv.config();
 
@@ -73,9 +72,6 @@ mongoose
   })
   .catch((err) => console.log(err));
 
-// app.post("/country", createCountry);
-// app.post("/state", createState);
-// app.post("/city", createCity);
 
 // ADMIN ROUTES
 app.use("/api/admin", adminRoute);

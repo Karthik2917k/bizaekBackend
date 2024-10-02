@@ -17,15 +17,15 @@ export interface IAccountants extends Document {
   instagram?: string;
   facebook?: string;
   about?: string;
-  languages?: string[];
-  cultures?: string[];
-  expertise?: string[];
-  clients?: { name: string; link?: string; image?: string }[];
+  languages?: mongoose.Schema.Types.ObjectId[]; // Array of language ObjectIds
+  cultures?: mongoose.Schema.Types.ObjectId[]; // Array of culture ObjectIds
+  expertise?: mongoose.Schema.Types.ObjectId[]; // Array of expertise ObjectIds
+  clients?: mongoose.Schema.Types.ObjectId[]; // Array of client ObjectIds
   officeAddress?: string;
-  city?: string;
+  city?: mongoose.Schema.Types.ObjectId; // Reference to city ObjectId
   zip?: string;
-  state?: string;
-  country?: string;
+  state?: mongoose.Schema.Types.ObjectId; // Reference to state ObjectId
+  country?: mongoose.Schema.Types.ObjectId; // Reference to country ObjectId
   status?: "ACTIVE" | "INACTIVE" | "BLOCKED";
 }
 
@@ -34,15 +34,17 @@ const userSchema: Schema<IAccountants> = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "User",
       required: false,
-      unique:true
+      unique: true,
     },
     firstName: {
       type: String,
+      trim: true,
     },
     lastName: {
       type: String,
+      trim: true,
     },
     profilePic: {
       type: String,
@@ -77,48 +79,39 @@ const userSchema: Schema<IAccountants> = new mongoose.Schema(
     about: {
       type: String,
     },
-    languages: [
-      {
-        type: String,
-      },
-    ],
-    cultures: [
-      {
-        type: String,
-      },
-    ],
-    expertise: [
-      {
-        type: String,
-      },
-    ],
-    clients: [
-      {
-        name: {
-          type: String,
-        },
-        link: {
-          type: String,
-        },
-        image: {
-          type: String,
-        },
-      },
-    ],
+    languages: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Language",
+    }],
+    cultures: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Culture",
+    }],
+    expertise: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Expertise",
+    }],
+    clients: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Client",
+    }],
     officeAddress: {
       type: String,
     },
     city: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "City",
     },
     zip: {
       type: String,
     },
     state: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "State",
     },
     country: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Country",
     },
     status: {
       type: String,

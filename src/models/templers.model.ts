@@ -2,7 +2,7 @@ import mongoose, { Document, Schema } from "mongoose";
 import mongoose_delete from "mongoose-delete";
 import { isEmail } from "validator";
 
-// Define an interface for the user (accountant) document
+// Define an interface for the templers document
 export interface ITemplers extends Document {
   userId?: mongoose.Schema.Types.ObjectId;
   firstName?: string;
@@ -12,16 +12,16 @@ export interface ITemplers extends Document {
   phone?: number;
   email: string;
   institution?: string;
-  category?: string[];
+  category?: string[]; // Array of category strings
   about?: string;
-  languages?: string[];
-  cultures?: string[];
-  services?: string[];
+  languages?: string[]; // Array of language strings
+  cultures?: string[]; // Array of culture strings
+  services?: string[]; // Array of service strings
   address?: string;
-  city?: string;
+  city?: mongoose.Schema.Types.ObjectId; // Reference to city ObjectId
   zip?: string;
-  state?: string;
-  country?: string;
+  state?: mongoose.Schema.Types.ObjectId; // Reference to state ObjectId
+  country?: mongoose.Schema.Types.ObjectId; // Reference to country ObjectId
   status?: "ACTIVE" | "INACTIVE" | "BLOCKED";
 }
 
@@ -30,19 +30,21 @@ const userSchema: Schema<ITemplers> = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "User", // Ensure this matches your User model
       required: false,
-      unique: true
+      unique: true,
     },
     firstName: {
       type: String,
+      trim: true, // Trim whitespace
     },
     lastName: {
       type: String,
+      trim: true, // Trim whitespace
     },
     profilePic: {
       type: String,
-      default: ""
+      default: "",
     },
     countryCode: {
       type: Number,
@@ -61,40 +63,38 @@ const userSchema: Schema<ITemplers> = new mongoose.Schema(
     }],
     institution: {
       type: String,
+      trim: true, // Trim whitespace
     },
     about: {
       type: String,
     },
-    languages: [
-      {
-        type: String,
-      },
-    ],
-    cultures: [
-      {
-        type: String,
-      },
-    ],
-    services: [
-      {
-        type: String,
-      },
-    ],
-
+    languages: [{
+      type: String,
+    }],
+    cultures: [{
+      type: String,
+    }],
+    services: [{
+      type: String,
+    }],
     address: {
       type: String,
+      trim: true, // Trim whitespace
     },
     city: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "City",
     },
     zip: {
       type: String,
     },
     state: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "State",
     },
     country: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Country",
     },
     status: {
       type: String,

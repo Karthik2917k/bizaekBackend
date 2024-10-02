@@ -46,19 +46,26 @@ export const getAllRealtorsPublic = async (req: Request, res: Response): Promise
       filter.languages = { $in: languageArray };
     }
     const realtors = await Realtors.find(filter)
-    .select('profilePic lastName firstName userId status city state country languages company')
-    .skip(skip)
-    .limit(pageSize);
+      .select('profilePic lastName firstName userId status city state country languages company')
+      .skip(skip)
+      .limit(pageSize)
+      .populate('languages', 'name')
+      .populate('cultures', 'name')
+      .populate('licenses', 'name')
+      .populate('services', 'name')
+      .populate('state', 'name')
+      .populate('city', 'name longitude latitude')
+      .populate('country', 'name');
 
-  // Fetch total count for pagination purposes
-  const totalRealtors = await Realtors.countDocuments(filter);
+    // Fetch total count for pagination purposes
+    const totalRealtors = await Realtors.countDocuments(filter);
 
-  res.status(200).json({
-    realtors,
-    totalPages: Math.ceil(totalRealtors / pageSize),
-    currentPage: pageNumber,
-    totalRealtors,
-  });
+    res.status(200).json({
+      realtors,
+      totalPages: Math.ceil(totalRealtors / pageSize),
+      currentPage: pageNumber,
+      totalRealtors,
+    });
   } catch (err) {
     const error = err instanceof Error ? err.message : 'Unknown error';
     res.status(400).json({ status: 400, error });
@@ -71,7 +78,14 @@ export const getRealtorById = async (req: Request, res: Response): Promise<void>
     const { id } = req.query;
 
     // Fetch realtor by ID
-    const realtor = await Realtors.findById(id);
+    const realtor = await Realtors.findById(id)
+    .populate('languages', 'name')
+    .populate('cultures', 'name')
+    .populate('licenses', 'name')
+    .populate('services', 'name')
+    .populate('state', 'name')
+    .populate('city', 'name longitude latitude')
+    .populate('country', 'name');
 
     if (!realtor) {
       res.status(404).json({ message: 'Realtor not found', status: 404 });
@@ -97,7 +111,14 @@ export const getRealtorProfile = async (req: Request, res: Response): Promise<vo
       res.status(401).json({ status: 401, message: 'Unauthorized: User not authenticated' });
       return;
     }
-    const realtor = await Realtors.findOne({ userId: userInfo._id });
+    const realtor = await Realtors.findOne({ userId: userInfo._id })
+      .populate('languages', 'name')
+      .populate('cultures', 'name')
+      .populate('licenses', 'name')
+      .populate('services', 'name')
+      .populate('state', 'name')
+      .populate('city', 'name longitude latitude')
+      .populate('country', 'name');
 
     if (!realtor) {
       res.status(404).json({ status: 404, message: 'Realtor not found' });
@@ -150,7 +171,7 @@ export const updateRealtor = async (req: Request, res: Response): Promise<void> 
     }
 
     const updatedRealtor = await Realtors.findOneAndUpdate(
-      {userId:userInfo._id},
+      { userId: userInfo._id },
       { ...req.body },
       { new: true }
     );
@@ -178,7 +199,7 @@ export const deleteRealtor = async (req: Request, res: Response): Promise<void> 
     }
 
     const updatedRealtor = await Realtors.findOneAndUpdate(
-      {userId:userInfo._id},
+      { userId: userInfo._id },
       { deleted: true },
       { new: true }
     );

@@ -14,9 +14,9 @@ export interface ITemplers extends Document {
   institution?: string;
   category?: string[]; // Array of category strings
   about?: string;
-  languages?: string[]; // Array of language strings
-  cultures?: string[]; // Array of culture strings
-  services?: string[]; // Array of service strings
+  languages?:  mongoose.Schema.Types.ObjectId[]; // Array of language strings
+  cultures?:  mongoose.Schema.Types.ObjectId[]; // Array of culture strings
+  services?:  mongoose.Schema.Types.ObjectId[]; // Array of service strings
   address?: string;
   city?: mongoose.Schema.Types.ObjectId; // Reference to city ObjectId
   zip?: string;
@@ -69,13 +69,16 @@ const userSchema: Schema<ITemplers> = new mongoose.Schema(
       type: String,
     },
     languages: [{
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Language",
     }],
     cultures: [{
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Culture",
     }],
     services: [{
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Service",
     }],
     address: {
       type: String,

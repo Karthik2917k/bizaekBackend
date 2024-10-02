@@ -55,7 +55,14 @@ export const getAllAccountantsPublic = async (req: Request, res: Response): Prom
     const accountants = await Accountants.find(filter)
       .select('profilePic lastName firstName userId status city state country languages company')
       .skip(skip)
-      .limit(pageSize);
+      .limit(pageSize)
+      .populate('languages', 'name')
+      .populate('cultures', 'name')
+      .populate('expertise', 'name')
+      .populate('clients', 'name')
+      .populate('state', 'name')
+      .populate('city', 'name longitude latitude')
+      .populate('country', 'name');
 
     // Fetch total count for pagination purposes
     const totalAccountants = await Accountants.countDocuments(filter);
@@ -78,7 +85,13 @@ export const getAccountantById = async (req: Request, res: Response): Promise<vo
     const { id } = req.query;
 
     // Fetch accountant by ID
-    const accountant = await Accountants.findById(id);
+    const accountant = await Accountants.findById(id).populate('languages', 'name')  
+    .populate('cultures', 'name')    
+    .populate('expertise', 'name')    
+    .populate('clients', 'name')      
+    .populate('state', 'name')       
+    .populate('city', 'name longitude latitude' )
+    .populate('country', 'name'); ;
 
     if (!accountant) {
       res.status(404).json({ message: 'Accountant not found', status: 404 });
@@ -104,7 +117,13 @@ export const getAccountantProfile = async (req: Request, res: Response): Promise
       res.status(401).json({ error: 'Unauthorized: User not authenticated' });
       return;
     }
-    const accountant = await Accountants.findOne({ userId: userInfo._id });
+    const accountant = await Accountants.findOne({ userId: userInfo._id }).populate('languages', 'name')
+      .populate('cultures', 'name')
+      .populate('expertise', 'name')
+      .populate('clients', 'name')
+      .populate('state', 'name')
+      .populate('city', 'name longitude latitude')
+      .populate('country', 'name');;
 
     if (!accountant) {
       res.status(404).json({ error: 'Accountant not found' });
@@ -163,7 +182,7 @@ export const updateAccountant = async (req: Request, res: Response): Promise<voi
     }
 
     const updatedAccountant = await Accountants.findOneAndUpdate(
-      {userId:userInfo._id},
+      { userId: userInfo._id },
       { ...req.body },
       { new: true }
     );
@@ -191,7 +210,7 @@ export const deleteAccountant = async (req: Request, res: Response): Promise<voi
     }
 
     const updatedAccountant = await Accountants.findOneAndUpdate(
-      {userId:userInfo._id},
+      { userId: userInfo._id },
       { deleted: true },
       { new: true }
     );

@@ -17,15 +17,15 @@ export interface IRealtors extends Document {
   instagram?: string;
   facebook?: string;
   about?: string;
-  languages?: string[]; // Array of language strings
-  cultures?: string[]; // Array of culture strings
-  services?: string[]; // Array of service strings
-  licenses?: string[]; // Array of service strings
+  languages?: mongoose.Schema.Types.ObjectId[]; // Array of Language ObjectIds
+  cultures?: mongoose.Schema.Types.ObjectId[]; // Array of Culture ObjectIds
+  services?: mongoose.Schema.Types.ObjectId[]; // Array of Service ObjectIds
+  licenses?: mongoose.Schema.Types.ObjectId[]; // Array of License ObjectIds
   officeAddress?: string;
-  city?: mongoose.Schema.Types.ObjectId; // Reference to city ObjectId
+  city?: mongoose.Schema.Types.ObjectId; // Reference to City ObjectId
   zip?: string;
-  state?: mongoose.Schema.Types.ObjectId; // Reference to state ObjectId
-  country?: mongoose.Schema.Types.ObjectId; // Reference to country ObjectId
+  state?: mongoose.Schema.Types.ObjectId; // Reference to State ObjectId
+  country?: mongoose.Schema.Types.ObjectId; // Reference to Country ObjectId
   status?: "ACTIVE" | "INACTIVE" | "BLOCKED"; 
 }
 
@@ -87,16 +87,20 @@ const userSchema: Schema<IRealtors> = new mongoose.Schema(
       trim: true, // Trim whitespace
     },
     languages: [{
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Language",
     }],
     cultures: [{
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Culture",
     }],
     services: [{
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Service",
     }],
     licenses: [{
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "License",
     }],
     officeAddress: {
       type: String,

@@ -5,9 +5,9 @@ import mongoose_delete from "mongoose-delete";
 export interface ICity extends Document {
   id: number;
   name: string;
-  state_id: number;
+  stateId: mongoose.Schema.Types.ObjectId;
   state_name: string;
-  country_id: number;
+  countryId: mongoose.Schema.Types.ObjectId;
   country_code: string;
   country_name: string;
   latitude: number;
@@ -30,16 +30,18 @@ const citySchema = new Schema<ICity>(
       type: String,
       required: true,
     },
-    state_id: {
-      type: Number,
+    stateId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "states",
       required: true,
     },
     state_name: {
       type: String,
       required: true,
     },
-    country_id: {
-      type: Number,
+    countryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "countries",
       required: true,
     },
     country_code: {

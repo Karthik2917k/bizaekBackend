@@ -5,7 +5,7 @@ import mongoose_delete from "mongoose-delete";
 export interface IState extends Document {
   id: number;
   name: string;
-  country_id: number;
+  countryId:mongoose.Schema.Types.ObjectId;
   country_code: string;
   country_name: string;
   latitude: number;
@@ -27,8 +27,9 @@ const stateSchema = new Schema<IState>(
       type: String,
       required: true,
     },
-    country_id: {
-      type: Number,
+    countryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "countries",
       required: true,
     },
     country_code: {

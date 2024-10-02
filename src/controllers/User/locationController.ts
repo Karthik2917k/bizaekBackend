@@ -20,8 +20,9 @@ export const getAllCountries = async (req: Request, res: Response): Promise<void
 export const getStatesByCountry = async (req: Request, res: Response): Promise<void> => {
   try {
     const { countryId } = req.params; // Expecting countryId as a route parameter
+    console.log('countryId:', countryId)
 
-    const states = await State.find({ country_id: countryId, deleted: false })
+    const states = await State.find({ countryId: countryId, deleted: false })
       .select('name id');
 
     if (states.length === 0) {
@@ -42,7 +43,7 @@ export const getCitiesByState = async (req: Request, res: Response): Promise<voi
   try {
     const { stateId } = req.params; // Expecting stateId as a route parameter
 
-    const cities = await City.find({ state_id: stateId, deleted: false })
+    const cities = await City.find({ stateId: stateId, deleted: false })
       .select('name id');
 
     if (cities.length === 0) {

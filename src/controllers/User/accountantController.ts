@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Accountants, { IAccountants } from '../../models/accountants.model';
+import mongoose from 'mongoose';
 
 // Define the structure of req.user with user containing _id
 interface UserI {
@@ -13,7 +14,7 @@ interface UserI {
 export const getAllAccountantsPublic = async (req: Request, res: Response): Promise<void> => {
   try {
     // Extract filters from query parameters
-    const { name = '', languages = '', location = '', page = '1', limit = '10' } = req.query;
+    const { name = '', languages = '', location = '', clients = '', cultures = '', expertise = '', page = '1', limit = '10' } = req.query;
 
     // Convert query parameters to their appropriate types
     const pageNumber = parseInt(page as string, 10) || 1;
@@ -26,6 +27,12 @@ export const getAllAccountantsPublic = async (req: Request, res: Response): Prom
       status: "ACTIVE",
     };
 
+ 
+
+    if(location){
+      filter.officeAddress= { $regex: location, $options: 'i' }
+    }
+
     // Name filter (combined first and last names)
     if (name) {
       filter.$or = [
@@ -35,20 +42,28 @@ export const getAllAccountantsPublic = async (req: Request, res: Response): Prom
       ];
     }
 
-    // Location filter (regex-based)
-    if (typeof location === 'string' && location) {
-      const locationRegex = new RegExp(location, 'i'); // Case-insensitive regex
-      filter.$or = [
-        { state: { $regex: locationRegex } },
-        { city: { $regex: locationRegex } },
-        { country: { $regex: locationRegex } }
-      ];
+    // Languages filter (expecting an array of ObjectIds)
+    if (languages) {
+      const languageArray = (languages as string).split(',').map(lang => new mongoose.Types.ObjectId(lang.trim()));
+      filter.languages = { $in: languageArray };
     }
 
-    // Languages filter (multiple languages)
-    if (languages) {
-      const languageArray = (languages as string).split(',').map(lang => lang.trim());
-      filter.languages = { $in: languageArray };
+    // Expertise filter (expecting an array of ObjectIds)
+    if (expertise) {
+      const expertiseArray = (expertise as string).split(',').map(expert => new mongoose.Types.ObjectId(expert.trim()));
+      filter.expertise = { $in: expertiseArray };
+    }
+
+    // Cultures filter (expecting an array of ObjectIds)
+    if (cultures) {
+      const culturesArray = (cultures as string).split(',').map(culture => new mongoose.Types.ObjectId(culture.trim()));
+      filter.cultures = { $in: culturesArray };
+    }
+
+    // Clients filter (expecting an array of ObjectIds)
+    if (clients) {
+      const clientsArray = (clients as string).split(',').map(client => new mongoose.Types.ObjectId(client.trim()));
+      filter.clients = { $in: clientsArray };
     }
 
     // Fetch accountants based on the filter and apply pagination
@@ -85,13 +100,13 @@ export const getAccountantById = async (req: Request, res: Response): Promise<vo
     const { id } = req.query;
 
     // Fetch accountant by ID
-    const accountant = await Accountants.findById(id).populate('languages', 'name')  
-    .populate('cultures', 'name')    
-    .populate('expertise', 'name')    
-    .populate('clients', 'name')      
-    .populate('state', 'name')       
-    .populate('city', 'name longitude latitude' )
-    .populate('country', 'name'); ;
+    const accountant = await Accountants.findById(id).populate('languages', 'name')
+      .populate('cultures', 'name')
+      .populate('expertise', 'name')
+      .populate('clients', 'name')
+      .populate('state', 'name')
+      .populate('city', 'name longitude latitude')
+      .populate('country', 'name');;
 
     if (!accountant) {
       res.status(404).json({ message: 'Accountant not found', status: 404 });

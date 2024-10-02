@@ -3,13 +3,12 @@ import mongoose_delete from "mongoose-delete";
 
 // Define an interface for the schema document
 export interface ICity extends Document {
-  id: number;
   name: string;
   stateId: mongoose.Schema.Types.ObjectId;
-  state_name: string;
+  stateName: string;
   countryId: mongoose.Schema.Types.ObjectId;
-  country_code: string;
-  country_name: string;
+  countryCode: string;
+  countryName: string;
   latitude: number;
   longitude: number;
   wikiDataId: string;
@@ -21,11 +20,6 @@ export interface ICity extends Document {
 // Define the schema
 const citySchema = new Schema<ICity>(
   {
-    id: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
     name: {
       type: String,
       required: true,
@@ -35,7 +29,7 @@ const citySchema = new Schema<ICity>(
       ref: "states",
       required: true,
     },
-    state_name: {
+    stateName: {
       type: String,
       required: true,
     },
@@ -44,11 +38,11 @@ const citySchema = new Schema<ICity>(
       ref: "countries",
       required: true,
     },
-    country_code: {
+    countryCode: {
       type: String,
       required: true,
     },
-    country_name: {
+    countryName: {
       type: String,
       required: true,
     },
@@ -65,7 +59,7 @@ const citySchema = new Schema<ICity>(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 // Apply the mongoose-delete plugin

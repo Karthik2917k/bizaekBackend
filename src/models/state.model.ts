@@ -3,11 +3,10 @@ import mongoose_delete from "mongoose-delete";
 
 // Define an interface for the schema document
 export interface IState extends Document {
-  id: number;
   name: string;
   countryId:mongoose.Schema.Types.ObjectId;
-  country_code: string;
-  country_name: string;
+  countryCode: string;
+  countryName: string;
   latitude: number;
   longitude: number;
   createdAt?: Date;
@@ -18,11 +17,6 @@ export interface IState extends Document {
 // Define the schema
 const stateSchema = new Schema<IState>(
   {
-    id: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
     name: {
       type: String,
       required: true,
@@ -32,11 +26,11 @@ const stateSchema = new Schema<IState>(
       ref: "countries",
       required: true,
     },
-    country_code: {
+    countryCode: {
       type: String,
       required: true,
     },
-    country_name: {
+    countryName: {
       type: String,
       required: true,
     },
@@ -47,6 +41,11 @@ const stateSchema = new Schema<IState>(
     longitude: {
       type: Number,
       required: true,
+    },
+    deleted: {
+      type: Boolean,
+      required: true,
+      default:false
     },
   },
   { timestamps: true }

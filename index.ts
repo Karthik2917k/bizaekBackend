@@ -1,37 +1,34 @@
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
-import cookieParser from 'cookie-parser';
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import https from "https";
 import http from "http";
 import dotenv from "dotenv";
 import { checkGuestAccess } from "./src/middleware/checkGuestAccess";
-import session from 'express-session';
-import passport from 'passport';
-import './src/helpers/passport-config'; // Import your passport configuration file
-import httpLogger  from "./src/util/createLogger";
+import session from "express-session";
+import passport from "passport";
+import "./src/helpers/passport-config"; // Import your passport configuration file
+import httpLogger from "./src/util/createLogger";
 // import './helpers/passport-config';
 
-import userRoute from "./src/routes/user.routes"; 
-import utilRoute from "./src/routes/utils.routes"; 
-import oauthRoute from "./src/routes/oauth.routes"; 
-import adminRoute from "./src/routes/admin.routes"; 
-import masterdataRoute from "./src/routes/masterdata.routes"; 
+import userRoute from "./src/routes/user.routes";
+import utilRoute from "./src/routes/utils.routes";
+import oauthRoute from "./src/routes/oauth.routes";
+import adminRoute from "./src/routes/admin.routes";
+import masterdataRoute from "./src/routes/masterdata.routes";
+import { createCity, createCountry, createState } from "./src/controllers/User/locationController";
 
 dotenv.config();
-
-
 
 const app = express();
 let server: http.Server | https.Server = http.createServer(app);
 
-
-
 app.get("/", (req: Request, res: Response) => res.send("Working!!!"));
 
 // Extract CORS_ORIGIN from environment variable and split it into an array
-const allowedOrigins = process.env.CORS_ORIGIN?.split(',');
+const allowedOrigins = process.env.CORS_ORIGIN?.split(",");
 
 const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
@@ -39,7 +36,7 @@ const corsOptions: cors.CorsOptions = {
     if (!origin || allowedOrigins?.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
@@ -54,11 +51,13 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(httpLogger);
-app.use(session({
-  secret: process.env.SESSION_SECRET!,
-  resave: false,
-  saveUninitialized: false,
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET!,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -74,6 +73,9 @@ mongoose
   })
   .catch((err) => console.log(err));
 
+// app.post("/country", createCountry);
+// app.post("/state", createState);
+// app.post("/city", createCity);
 
 // ADMIN ROUTES
 app.use("/api/admin", adminRoute);
@@ -81,7 +83,5 @@ app.use("/api/admin", masterdataRoute);
 
 // USER ROUTES
 app.use("/api/user", userRoute);
-app.use("/api/util",checkGuestAccess(), utilRoute);
-app.use('/oauth', oauthRoute);
-
-
+app.use("/api/util", checkGuestAccess(), utilRoute);
+app.use("/oauth", oauthRoute);

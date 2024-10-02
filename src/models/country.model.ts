@@ -3,19 +3,18 @@ import mongoose_delete from "mongoose-delete";
 
 // Define an interface for the schema document
 export interface ICountry extends Document {
-  id: number;
   name: string;
   iso3: string;
   iso2: string;
-  numeric_code: number;
-  phone_code: number;
+  numericCode: number;
+  phoneCode: number;
   capital: string;
   currency: string;
-  currency_name: string;
+  currencyName: string;
   region: string;
-  region_id: number;
+  regionId: number;
   subregion: string;
-  subregion_id: number;
+  subregionId: number;
   nationality: string;
   timezones: string; // You might want to adjust this type based on your usage
   latitude: number;
@@ -28,11 +27,6 @@ export interface ICountry extends Document {
 // Define the schema
 const countrySchema = new Schema<ICountry>(
   {
-    id: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
     name: {
       type: String,
       required: true,
@@ -45,11 +39,11 @@ const countrySchema = new Schema<ICountry>(
       type: String,
       required: true,
     },
-    numeric_code: {
+    numericCode: {
       type: Number,
       required: true,
     },
-    phone_code: {
+    phoneCode: {
       type: Number,
       required: true,
     },
@@ -61,7 +55,7 @@ const countrySchema = new Schema<ICountry>(
       type: String,
       required: true,
     },
-    currency_name: {
+    currencyName: {
       type: String,
       required: true,
     },
@@ -69,7 +63,7 @@ const countrySchema = new Schema<ICountry>(
       type: String,
       required: true,
     },
-    region_id: {
+    regionId: {
       type: Number,
       required: true,
     },
@@ -77,7 +71,7 @@ const countrySchema = new Schema<ICountry>(
       type: String,
       required: true,
     },
-    subregion_id: {
+    subregionId: {
       type: Number,
       required: true,
     },
@@ -98,7 +92,7 @@ const countrySchema = new Schema<ICountry>(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 // Apply the mongoose-delete plugin

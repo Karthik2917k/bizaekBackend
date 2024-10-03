@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import Realtors, { IRealtors } from '../../models/realtors.model';
+import mongoose from 'mongoose';
+
 
 // Define the structure of req.user with user containing _id
 interface UserI {
@@ -8,7 +10,7 @@ interface UserI {
 
 export const getAllRealtorsPublic = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name = '', languages = '', location = '', page = '1', limit = '10' } = req.query;
+    const { name = '', languages = '', location = '', services = '', cultures = '', licenses = '', page = '1', limit = '10' } = req.query;
 
     // Convert query parameters to their appropriate types
     const pageNumber = parseInt(page as string, 10) || 1;
@@ -21,6 +23,10 @@ export const getAllRealtorsPublic = async (req: Request, res: Response): Promise
       status: "ACTIVE",
     };
 
+    if(location){
+      filter.officeAddress= { $regex: location, $options: 'i' }
+    }
+
     // Name filter (combined first and last names)
     if (name) {
       filter.$or = [
@@ -30,21 +36,33 @@ export const getAllRealtorsPublic = async (req: Request, res: Response): Promise
       ];
     }
 
-    // Location filter (regex-based)
-    if (typeof location === 'string' && location) {
-      const locationRegex = new RegExp(location, 'i'); // Case-insensitive regex
-      filter.$or = [
-        { state: { $regex: locationRegex } },
-        { city: { $regex: locationRegex } },
-        { country: { $regex: locationRegex } }
-      ];
+ 
+
+      // Languages filter (expecting an array of ObjectIds)
+      if (languages) {
+        const languageArray = (languages as string).split(',').map(lang => new mongoose.Types.ObjectId(lang.trim()));
+        filter.languages = { $in: languageArray };
+      }
+
+        // Expertise filter (expecting an array of ObjectIds)
+    if (licenses) {
+      const expertiseArray = (licenses as string).split(',').map(expert => new mongoose.Types.ObjectId(expert.trim()));
+      filter.licenses = { $in: expertiseArray };
     }
 
-    // Languages filter (multiple languages)
-    if (languages) {
-      const languageArray = (languages as string).split(',').map(lang => lang.trim());
-      filter.languages = { $in: languageArray };
+    // Cultures filter (expecting an array of ObjectIds)
+    if (cultures) {
+      const culturesArray = (cultures as string).split(',').map(culture => new mongoose.Types.ObjectId(culture.trim()));
+      filter.cultures = { $in: culturesArray };
     }
+
+    // Clients filter (expecting an array of ObjectIds)
+    if (services) {
+      const clientsArray = (services as string).split(',').map(client => new mongoose.Types.ObjectId(client.trim()));
+      filter.services = { $in: clientsArray };
+    }
+
+
     const realtors = await Realtors.find(filter)
       .select('profilePic lastName firstName userId status city state country languages company')
       .skip(skip)

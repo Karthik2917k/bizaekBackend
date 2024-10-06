@@ -106,10 +106,10 @@ const userSchema: Schema<IAccountants> = new mongoose.Schema(
     zip: {
       type: String,
     },
-    type: {
+    type: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "AccountantType",
-    },
+    }],
     state: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "State",

@@ -25,7 +25,7 @@ export interface IAccountants extends Document {
   city?: mongoose.Schema.Types.ObjectId; // Reference to city ObjectId
   zip?: string;
   state?: mongoose.Schema.Types.ObjectId; // Reference to state ObjectId
-  type?: mongoose.Schema.Types.ObjectId; // Reference to state ObjectId
+  types?:  mongoose.Schema.Types.ObjectId[]; // Reference to state ObjectId
   country?: mongoose.Schema.Types.ObjectId; // Reference to country ObjectId
   status?: "ACTIVE" | "INACTIVE" | "BLOCKED";
 }
@@ -106,7 +106,7 @@ const userSchema: Schema<IAccountants> = new mongoose.Schema(
     zip: {
       type: String,
     },
-    type: [{
+    types: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "AccountantType",
     }],

@@ -23,8 +23,12 @@ export const getAllRealtorsPublic = async (req: Request, res: Response): Promise
       status: "ACTIVE",
     };
 
-    if(location){
-      filter.officeAddress= { $regex: location, $options: 'i' }
+    if (location) {
+      filter.$or = [
+        { 'city.name': { $regex: location, $options: 'i' } },
+        { 'state.name': { $regex: location, $options: 'i' } },
+        { 'country.name': { $regex: location, $options: 'i' } },
+      ];
     }
 
     // Name filter (combined first and last names)

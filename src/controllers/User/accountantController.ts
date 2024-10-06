@@ -14,7 +14,7 @@ interface UserI {
 export const getAllAccountantsPublic = async (req: Request, res: Response): Promise<void> => {
   try {
     // Extract filters from query parameters
-    const { name = '', languages = '', location = '', clients = '', cultures = '', expertise = '', page = '1', limit = '10' } = req.query;
+    const { name = '', languages = '', location = '', types = '', page = '1', limit = '10' } = req.query;
 
     // Convert query parameters to their appropriate types
     const pageNumber = parseInt(page as string, 10) || 1;
@@ -29,8 +29,12 @@ export const getAllAccountantsPublic = async (req: Request, res: Response): Prom
 
  
 
-    if(location){
-      filter.officeAddress= { $regex: location, $options: 'i' }
+    if (location) {
+      filter.$or = [
+        { 'city.name': { $regex: location, $options: 'i' } },
+        { 'state.name': { $regex: location, $options: 'i' } },
+        { 'country.name': { $regex: location, $options: 'i' } },
+      ];
     }
 
     // Name filter (combined first and last names)
@@ -48,22 +52,12 @@ export const getAllAccountantsPublic = async (req: Request, res: Response): Prom
       filter.languages = { $in: languageArray };
     }
 
-    // Expertise filter (expecting an array of ObjectIds)
-    if (expertise) {
-      const expertiseArray = (expertise as string).split(',').map(expert => new mongoose.Types.ObjectId(expert.trim()));
-      filter.expertise = { $in: expertiseArray };
-    }
 
-    // Cultures filter (expecting an array of ObjectIds)
-    if (cultures) {
-      const culturesArray = (cultures as string).split(',').map(culture => new mongoose.Types.ObjectId(culture.trim()));
-      filter.cultures = { $in: culturesArray };
-    }
 
     // Clients filter (expecting an array of ObjectIds)
-    if (clients) {
-      const clientsArray = (clients as string).split(',').map(client => new mongoose.Types.ObjectId(client.trim()));
-      filter.clients = { $in: clientsArray };
+    if (types) {
+      const typesArray = (types as string).split(',').map(type => new mongoose.Types.ObjectId(type.trim()));
+      filter.types = { $in: typesArray };
     }
 
     // Fetch accountants based on the filter and apply pagination

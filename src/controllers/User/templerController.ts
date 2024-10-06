@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import Templers from '../../models/templers.model';
+import mongoose from 'mongoose';
+
 
 // Define the structure of req.user with user containing _id
 interface UserI {
@@ -31,18 +33,18 @@ export const getAllTemplersPublic = async (req: Request, res: Response): Promise
     }
 
     // Location filter (regex-based)
-    if (typeof location === 'string' && location) {
-      const locationRegex = new RegExp(location, 'i'); // Case-insensitive regex
+    if (location) {
       filter.$or = [
-        { state: { $regex: locationRegex } },
-        { city: { $regex: locationRegex } },
-        { country: { $regex: locationRegex } }
+        { officeAddress: { $regex: location, $options: 'i' } },
+        { 'city.name': { $regex: location, $options: 'i' } },
+        { 'state.name': { $regex: location, $options: 'i' } },
+        { 'country.name': { $regex: location, $options: 'i' } },
       ];
     }
 
     // Languages filter (multiple languages)
     if (languages) {
-      const languageArray = (languages as string).split(',').map(lang => lang.trim());
+      const languageArray = (languages as string).split(',').map(lang => new mongoose.Types.ObjectId(lang.trim()));
       filter.languages = { $in: languageArray };
     }
     const templers = await Templers.find(filter)

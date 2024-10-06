@@ -65,6 +65,11 @@ export const getAllAccountantsPublic = async (req: Request, res: Response): Prom
       .select('profilePic lastName firstName userId status city state country languages company')
       .skip(skip)
       .limit(pageSize)
+      .populate({
+        path: 'userId',
+        match: { status: 'ACTIVE' }, // Only populate accountants whose userId's status is ACTIVE
+        select: '_id status', // Selecting only _id and status fields from User model
+      })
       .populate('languages', 'name')
       .populate('cultures', 'name')
       .populate('expertise', 'name')

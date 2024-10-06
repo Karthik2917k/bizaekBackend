@@ -25,7 +25,7 @@ export const getAllAccountants = async (req: Request, res: Response): Promise<vo
       .select('profilePic lastName firstName userId status createdAt type')
       .skip(skip)
       .limit(pageSize)
-      .populate('type', 'name')
+      .populate('types', 'name')
      
 
     // Fetch total count for pagination purposes

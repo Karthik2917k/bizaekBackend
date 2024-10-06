@@ -133,6 +133,7 @@ export const getAccountantProfile = async (req: Request, res: Response): Promise
     }
     const accountant = await Accountants.findOne({ userId: userInfo._id }).populate('languages', 'name')
       .populate('cultures', 'name')
+      .populate('types', 'name')
       .populate('expertise', 'name')
       .populate('clients', 'name')
       .populate('state', 'name')

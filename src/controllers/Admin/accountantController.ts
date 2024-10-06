@@ -22,9 +22,11 @@ export const getAllAccountants = async (req: Request, res: Response): Promise<vo
 
     // Fetch accountants based on the search query and apply pagination
     const accountants = await Accountants.find(searchQuery)
-      .select('profilePic lastName firstName userId status')
+      .select('profilePic lastName firstName userId status createdAt type')
       .skip(skip)
-      .limit(pageSize);
+      .limit(pageSize)
+      .populate('type', 'name')
+     
 
     // Fetch total count for pagination purposes
     const totalAccountants = await Accountants.countDocuments(searchQuery);

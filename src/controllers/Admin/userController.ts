@@ -22,10 +22,9 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 
     // Fetch users based on the search query and apply pagination
     const users = await User.find(searchQuery)
-      .select('name email status')
+      .select('name email status createdAt')
       .skip(skip)
       .limit(pageSize);
-
     // Fetch total count for pagination purposes
     const totalUsers = await User.countDocuments(searchQuery);
 
@@ -67,12 +66,13 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.query;
+    const { status } = req.body;
 
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { ...req.body },
+      { status },
       { new: true }
-    );
+    ).select("name status");
 
     if (!updatedUser) {
       res.status(404).json({ error: 'User not found' });

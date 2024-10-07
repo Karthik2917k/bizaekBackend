@@ -72,9 +72,9 @@ v1Router.use("/api/admin", masterdataRoute);
 // USER ROUTES
 v1Router.use("/api/user", userRoute);
 v1Router.use("/api/util", checkGuestAccess(), utilRoute);
-v1Router.use("/oauth", oauthRoute);
+v1Router.use("/api/oauth", oauthRoute);
 
-// v1 appply the v1 prefix globally
+// v1 apply the v1 prefix globally
 app.use("/v1", v1Router);
 
 

@@ -29,13 +29,11 @@ router.get(
             domain: "temple.bizaek.com", // Allow cookie for subdomains   // Set to false for local development (HTTP)
             sameSite: "lax", // Lax allows cookies to be sent on top-level navigation
             maxAge: 24 * 60 * 60 * 1000 * 7, // 7 day in milliseconds
-            path: "/", // Ensure the cookie is available on all paths
           })
         : res.cookie("token", token, {
             httpOnly: true,
             secure: true, // disable in local development
             sameSite: "none", // Lax allows cookies to be sent on top-level navigation
-            // path: "/", // Available throughout the application
             maxAge: 24 * 60 * 60 * 1000 * 7, // 7 day in milliseconds
           });
       res.redirect(`${redirectUrl}`); // Redirect after successful login

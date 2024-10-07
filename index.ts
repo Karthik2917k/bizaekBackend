@@ -22,9 +22,10 @@ import masterdataRoute from "./src/routes/masterdata.routes";
 dotenv.config();
 
 const app = express();
+const v1Router  = express.Router();
 let server: http.Server | https.Server = http.createServer(app);
 
-app.get("/", (req: Request, res: Response) => res.send("Working!!!"));
+v1Router.get("/", (req: Request, res: Response) => res.send("Working!!!"));
 
 // Extract CORS_ORIGIN from environment variable and split it into an array
 const allowedOrigins = process.env.CORS_ORIGIN?.split(",");
@@ -62,6 +63,21 @@ app.use(passport.initialize());
 app.use(passport.session());
 const dbURI: string = process.env.DB_URI || "";
 
+
+
+// ADMIN ROUTES
+v1Router.use("/api/admin", adminRoute);
+v1Router.use("/api/admin", masterdataRoute);
+
+// USER ROUTES
+v1Router.use("/api/user", userRoute);
+v1Router.use("/api/util", checkGuestAccess(), utilRoute);
+v1Router.use("/oauth", oauthRoute);
+
+// v1 appply the v1 prefix globally
+app.use("/v1", v1Router);
+
+
 mongoose.set("strictQuery", true);
 mongoose
   .connect(dbURI)
@@ -71,13 +87,3 @@ mongoose
     });
   })
   .catch((err) => console.log(err));
-
-
-// ADMIN ROUTES
-app.use("/api/admin", adminRoute);
-app.use("/api/admin", masterdataRoute);
-
-// USER ROUTES
-app.use("/api/user", userRoute);
-app.use("/api/util", checkGuestAccess(), utilRoute);
-app.use("/oauth", oauthRoute);

@@ -10,7 +10,7 @@ interface UserI {
 
 export const getAllRealtorsPublic = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name = '', languages = '', location = '', services = '', cultures = '', licenses = '', page = '1', limit = '10' } = req.query;
+    const { name = '', languages = '', location = '', services = '', companyName = '', cultures = '', licenses = '', page = '1', limit = '10' } = req.query;
 
     // Convert query parameters to their appropriate types
     const pageNumber = parseInt(page as string, 10) || 1;
@@ -40,15 +40,19 @@ export const getAllRealtorsPublic = async (req: Request, res: Response): Promise
       ];
     }
 
- 
+    if (companyName) {
+      filter.companyName = { $regex: companyName, $options: 'i' };
+    }
 
-      // Languages filter (expecting an array of ObjectIds)
-      if (languages) {
-        const languageArray = (languages as string).split(',').map(lang => new mongoose.Types.ObjectId(lang.trim()));
-        filter.languages = { $in: languageArray };
-      }
 
-        // Expertise filter (expecting an array of ObjectIds)
+
+    // Languages filter (expecting an array of ObjectIds)
+    if (languages) {
+      const languageArray = (languages as string).split(',').map(lang => new mongoose.Types.ObjectId(lang.trim()));
+      filter.languages = { $in: languageArray };
+    }
+
+    // Expertise filter (expecting an array of ObjectIds)
     if (licenses) {
       const expertiseArray = (licenses as string).split(',').map(expert => new mongoose.Types.ObjectId(expert.trim()));
       filter.licenses = { $in: expertiseArray };
@@ -101,13 +105,13 @@ export const getRealtorById = async (req: Request, res: Response): Promise<void>
 
     // Fetch realtor by ID
     const realtor = await Realtors.findById(id)
-    .populate('languages', 'name')
-    .populate('cultures', 'name')
-    .populate('licenses', 'name')
-    .populate('services', 'name')
-    .populate('state', 'name')
-    .populate('city', 'name longitude latitude')
-    .populate('country', 'name');
+      .populate('languages', 'name')
+      .populate('cultures', 'name')
+      .populate('licenses', 'name')
+      .populate('services', 'name')
+      .populate('state', 'name')
+      .populate('city', 'name longitude latitude')
+      .populate('country', 'name');
 
     if (!realtor) {
       res.status(404).json({ message: 'Realtor not found', status: 404 });

@@ -17,6 +17,7 @@ export interface IRealtors extends Document {
   instagram?: string;
   facebook?: string;
   about?: string;
+  companyName?: string;
   languages?: mongoose.Schema.Types.ObjectId[]; // Array of Language ObjectIds
   cultures?: mongoose.Schema.Types.ObjectId[]; // Array of Culture ObjectIds
   services?: mongoose.Schema.Types.ObjectId[]; // Array of Service ObjectIds
@@ -83,6 +84,10 @@ const userSchema: Schema<IRealtors> = new mongoose.Schema(
       trim: true, // Trim whitespace
     },
     about: {
+      type: String,
+      trim: true, // Trim whitespace
+    },
+    companyName: {
       type: String,
       trim: true, // Trim whitespace
     },

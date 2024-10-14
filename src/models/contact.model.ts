@@ -3,7 +3,7 @@ import mongoose_delete from "mongoose-delete";
 
 // Define an interface for the schema document
 interface IContactInquiry extends Document {
-  profileId: string;
+  profileId: mongoose.Schema.Types.ObjectId;
   email: string;
   firstName: string;
   lastName: string;
@@ -20,7 +20,8 @@ interface IContactInquiry extends Document {
 const contactInquirySchema = new Schema<IContactInquiry>(
   {
     profileId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      required: true
     },
     email: {
       type: String,

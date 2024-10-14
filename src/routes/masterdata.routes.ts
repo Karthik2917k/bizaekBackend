@@ -4,8 +4,9 @@ import * as cultureController from "../controllers/Admin/Masterdata/cultureContr
 import * as expertiseController from "../controllers/Admin/Masterdata/expertiseController";
 import * as languagesController from "../controllers/Admin/Masterdata/languagesController";
 import * as accountantTypeController from "../controllers/Admin/Masterdata/accountantTypeController";
-import * as serviceController from "../controllers/Admin/Masterdata/servicesController"; // Import your service controller
-import * as licenseController from "../controllers/Admin/Masterdata/licenseController"; // Import your license controller
+import * as serviceController from "../controllers/Admin/Masterdata/servicesController"; 
+import * as licenseController from "../controllers/Admin/Masterdata/licenseController"; 
+import * as insuranceTypeController from "../controllers/Admin/Masterdata/InsuranceTypeController"; 
 
 import { checkGuestAccess } from "../middleware/checkGuestAccess";
 import { checkAdminPermission } from "../middleware/checkAdminToken";
@@ -63,6 +64,13 @@ router.post("/accountantType/createAccountantType", checkAdminPermission(), acco
 router.put("/accountantType/updateAccountantType", checkAdminPermission(), accountantTypeController.updateAccountantType);
 router.delete("/accountantType/deleteAccountantType", checkAdminPermission(), accountantTypeController.deleteAccountantType);
 
+// Insurance Type Routes
+router.get("/insuranceType/getAllInsuranceTypes", checkAdminPermission(), insuranceTypeController.getAllInsuranceTypes);
+router.get("/insuranceType/getInsuranceTypeById", checkAdminPermission(), insuranceTypeController.getInsuranceTypeById);
+router.post("/insuranceType/createInsuranceType", checkAdminPermission(), insuranceTypeController.createInsuranceType);
+router.put("/insuranceType/updateInsuranceType", checkAdminPermission(), insuranceTypeController.updateInsuranceType);
+router.delete("/insuranceType/deleteInsuranceType", checkAdminPermission(), insuranceTypeController.deleteInsuranceType);
+
 // Public Routes
 
 // Client Public Routes
@@ -85,5 +93,8 @@ router.get("/public/getAllLicenses", checkGuestAccess(), licenseController.getAl
 
 // Accountant Type Public Routes
 router.get("/public/getAllAccountantTypes", checkGuestAccess(), accountantTypeController.getAllAccountantTypes);
+
+// Insurance Type Public Routes
+router.get("/public/getAllInsuranceTypes", checkGuestAccess(), insuranceTypeController.getAllInsuranceTypes);
 
 export default router;

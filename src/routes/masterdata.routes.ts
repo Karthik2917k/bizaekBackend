@@ -7,6 +7,7 @@ import * as accountantTypeController from "../controllers/Admin/Masterdata/accou
 import * as serviceController from "../controllers/Admin/Masterdata/servicesController"; 
 import * as licenseController from "../controllers/Admin/Masterdata/licenseController"; 
 import * as insuranceTypeController from "../controllers/Admin/Masterdata/InsuranceTypeController"; 
+import * as categoryController from "../controllers/Admin/Masterdata/categoryController"; // Import category controller
 
 import { checkGuestAccess } from "../middleware/checkGuestAccess";
 import { checkAdminPermission } from "../middleware/checkAdminToken";
@@ -71,6 +72,13 @@ router.post("/insuranceType/createInsuranceType", checkAdminPermission(), insura
 router.put("/insuranceType/updateInsuranceType", checkAdminPermission(), insuranceTypeController.updateInsuranceType);
 router.delete("/insuranceType/deleteInsuranceType", checkAdminPermission(), insuranceTypeController.deleteInsuranceType);
 
+// Category Routes
+router.get("/category/getAllCategories", checkAdminPermission(), categoryController.getAllCategories);
+router.get("/category/getCategoryById", checkAdminPermission(), categoryController.getCategoryById);
+router.post("/category/createCategory", checkAdminPermission(), categoryController.createCategory); 
+router.put("/category/updateCategory", checkAdminPermission(), categoryController.updateCategory);
+router.delete("/category/deleteCategory", checkAdminPermission(), categoryController.deleteCategory);
+
 // Public Routes
 
 // Client Public Routes
@@ -96,5 +104,8 @@ router.get("/public/getAllAccountantTypes", checkGuestAccess(), accountantTypeCo
 
 // Insurance Type Public Routes
 router.get("/public/getAllInsuranceTypes", checkGuestAccess(), insuranceTypeController.getAllInsuranceTypes);
+
+// Category Public Routes
+router.get("/public/getAllCategories", checkGuestAccess(), categoryController.getAllCategories);
 
 export default router;

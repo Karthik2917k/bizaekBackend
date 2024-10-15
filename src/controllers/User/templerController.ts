@@ -49,6 +49,13 @@ export const getAllTemplersPublic = async (req: Request, res: Response): Promise
     }
     const templers = await Templers.find(filter)
       .select('profilePic lastName firstName userId status city state country languages company')
+      .populate('languages', 'name')
+      .populate('cultures', 'name')
+      .populate('category', 'name')
+      .populate('services', 'name')
+      .populate('state', 'name')
+      .populate('city', 'name longitude latitude')
+      .populate('country', 'name')
       .skip(skip)
       .limit(pageSize);
 
@@ -73,7 +80,14 @@ export const getTemplerById = async (req: Request, res: Response): Promise<void>
     const { id } = req.query;
 
     // Fetch templer by ID
-    const templer = await Templers.findById(id);
+    const templer = await Templers.findById(id)
+    .populate('languages', 'name')
+    .populate('cultures', 'name')
+    .populate('category', 'name')
+    .populate('services', 'name')
+    .populate('state', 'name')
+    .populate('city', 'name longitude latitude')
+    .populate('country', 'name');
 
     if (!templer) {
       res.status(404).json({ message: 'Templer not found', status: 404 });
@@ -99,7 +113,14 @@ export const getTemplerProfile = async (req: Request, res: Response): Promise<vo
       return;
     }
 
-    const templer = await Templers.findOne({ userId: userInfo._id });
+    const templer = await Templers.findOne({ userId: userInfo._id })
+      .populate('languages', 'name')
+      .populate('cultures', 'name')
+      .populate('category', 'name')
+      .populate('services', 'name')
+      .populate('state', 'name')
+      .populate('city', 'name longitude latitude')
+      .populate('country', 'name');
 
     if (!templer) {
       res.status(404).json({ status: 404, message: 'Templer not found' });
@@ -171,7 +192,7 @@ export const deleteTempler = async (req: Request, res: Response): Promise<void> 
     }
 
     const updatedTempler = await Templers.findOneAndUpdate(
-      {userId:userInfo._id}, { deleted: true }, { new: true });
+      { userId: userInfo._id }, { deleted: true }, { new: true });
 
     if (!updatedTempler) {
       res.status(404).json({ status: 404, message: 'Templer not found' });

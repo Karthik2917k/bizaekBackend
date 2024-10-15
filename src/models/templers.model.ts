@@ -12,7 +12,7 @@ export interface ITemplers extends Document {
   phone?: number;
   email: string;
   institution?: string;
-  category?: string[]; // Array of category strings
+  category?:  mongoose.Schema.Types.ObjectId[];// Array of category strings
   about?: string;
   languages?:  mongoose.Schema.Types.ObjectId[]; // Array of language strings
   cultures?:  mongoose.Schema.Types.ObjectId[]; // Array of culture strings
@@ -59,7 +59,8 @@ const userSchema: Schema<ITemplers> = new mongoose.Schema(
       validate: [isEmail, "Invalid email"],
     },
     category: [{
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
     }],
     institution: {
       type: String,

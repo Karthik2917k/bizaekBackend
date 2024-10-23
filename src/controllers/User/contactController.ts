@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import ContactInquiry from "../../models/contact.model";
+import ContactInquiry from "../../models/contactUs.model";
 import { Types } from "mongoose";
 
 // Get all contact inquiries

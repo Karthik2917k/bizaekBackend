@@ -17,6 +17,7 @@ import userRoute from "./src/routes/user.routes";
 import utilRoute from "./src/routes/utils.routes";
 import oauthRoute from "./src/routes/oauth.routes";
 import adminRoute from "./src/routes/admin.routes";
+import commonRoute from "./src/routes/common.routes";
 import masterdataRoute from "./src/routes/masterdata.routes";
 
 dotenv.config();
@@ -73,6 +74,7 @@ v1Router.use("/api/admin", masterdataRoute);
 v1Router.use("/api/user", userRoute);
 v1Router.use("/api/util", checkGuestAccess(), utilRoute);
 v1Router.use("/api/oauth", oauthRoute);
+v1Router.use("/api/common", commonRoute);
 
 // v1 apply the v1 prefix globally
 app.use("/v1", v1Router);
